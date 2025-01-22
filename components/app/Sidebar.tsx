@@ -13,6 +13,7 @@ import {
   HelpCircle,
   FootprintsIcon as FooterIcon,
   Search,
+  Code,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CodeViewer } from "@/components/CodeViewer"
 
 interface SidebarNavigationProps {
   sections: {
@@ -70,6 +72,9 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                                                     }: SidebarNavigationProps) => {
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
+  const [codeViewerOpen, setCodeViewerOpen] = useState(false)
+  const [currentCode, setCurrentCode] = useState("")
+  const [currentFileName, setCurrentFileName] = useState("")
 
   const filteredSections = sections.filter((section) => section.label.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -94,15 +99,36 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     })
   }
 
+  const loadComponentCode = async (sectionId: string, style: string) => {
+    try {
+      const response = await fetch(`/api/component-code?id=${sectionId}&style=${style}`)
+      if (!response.ok) throw new Error("Failed to fetch component code")
+      const code = await response.text()
+      setCurrentCode(code)
+      setCurrentFileName(`${style}.tsx`)
+      setCodeViewerOpen(true)
+    } catch (error) {
+      console.error("Error loading component code:", error)
+      // Vous pouvez ajouter ici une notification d'erreur pour l'utilisateur
+    }
+  }
+
   return (
       <>
         <div className="h-full flex flex-col w-full">
           <div className="border-b border-r px-2 py-2 pt-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-semibold">Components</span>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setDialogOpen(true)}>
-                <Plus className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center ml-auto space-x-1">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
+                    onClick={() => setDialogOpen(true)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <Input
                 type="text"
@@ -129,47 +155,49 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                   <div
                                       onClick={() => onSelect(section.id)}
                                       className={cn(
-                                          "flex items-center w-full px-2 py-2 hover:bg-gray-100 cursor-pointer rounded-md",
+                                          "flex items-center w-full px-2 py-2 hover:bg-gray-100 cursor-pointer rounded-md group",
                                           selectedSection === section.id && "bg-gray-100",
                                       )}
                                   >
                                     <div className="flex items-center flex-1">
                                       {getIconForSection(section.id)}
-                                      <span className="text-sm">
+                                      <span className="text-sm truncate max-w-[100px]">
                                 {section.id.charAt(0).toUpperCase() + section.id.slice(1)}
                               </span>
-                                      {section.darkMode ? (
-                                          <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              className="h-4 w-4 text-yellow-500 ml-2"
-                                              viewBox="0 0 20 20"
-                                              fill="currentColor"
-                                          >
-                                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                                          </svg>
-                                      ) : (
-                                          <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              className="h-4 w-4 text-gray-400 ml-2"
-                                              viewBox="0 0 20 20"
-                                              fill="currentColor"
-                                          >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                                                clipRule="evenodd"
-                                            />
-                                          </svg>
-                                      )}
+                                      <div className="flex items-center ml-auto space-x-1">
+                                        {section.darkMode ? (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 text-yellow-500"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                            </svg>
+                                        ) : (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 text-gray-400"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                              <path
+                                                  fillRule="evenodd"
+                                                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                                                  clipRule="evenodd"
+                                              />
+                                            </svg>
+                                        )}
+                                      </div>
                                     </div>
-                                    <div className="flex transition-opacity ml-2">
+                                    <div className="flex items-center ml-auto space-x-1">
                                       <TooltipProvider>
                                         <Tooltip>
                                           <TooltipTrigger asChild>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-6 w-6"
+                                                className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
                                                 onClick={(e) => {
                                                   e.stopPropagation()
                                                   onMove(section.id, "up")
@@ -189,7 +217,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-6 w-6"
+                                                className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
                                                 onClick={(e) => {
                                                   e.stopPropagation()
                                                   onMove(section.id, "down")
@@ -209,7 +237,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-6 w-6 text-red-500 hover:text-red-700"
+                                                className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
                                                 onClick={(e) => {
                                                   e.stopPropagation()
                                                   onDelete(section.id)
@@ -220,6 +248,26 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                           </TooltipTrigger>
                                           <TooltipContent>
                                             <p>Delete component</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
+                                                onClick={(e) => {
+                                                  e.stopPropagation()
+                                                  loadComponentCode(section.id, section.style)
+                                                }}
+                                            >
+                                              <Code className="h-4 w-4" />
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>View Source Code</p>
                                           </TooltipContent>
                                         </Tooltip>
                                       </TooltipProvider>
@@ -241,6 +289,12 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             onOpenChange={setDialogOpen}
             onSelect={onAdd}
             existingComponents={sections.map((s) => s.id)}
+        />
+        <CodeViewer
+            open={codeViewerOpen}
+            onOpenChange={setCodeViewerOpen}
+            code={currentCode}
+            fileName={currentFileName}
         />
       </>
   )
