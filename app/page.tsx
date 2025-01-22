@@ -19,8 +19,8 @@ import type { ComponentType } from "react"
 
 interface ComponentProps {
   content?: string
-  onEditStart: (sectionId: string) => void
-  onEditEnd: (sectionId: string, content: string) => void
+  onEditStart?: (sectionId: string) => void
+  onEditEnd?: (sectionId: string, content: string) => void
 }
 
 const componentImports: { [key: string]: ComponentType<ComponentProps> } = {

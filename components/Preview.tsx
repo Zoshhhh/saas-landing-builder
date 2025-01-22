@@ -2,17 +2,19 @@ import React, { useEffect, useRef, useState } from "react"
 import type { ComponentType } from "react"
 import { BrowserFrame } from "./BrowserFrame"
 
+interface ComponentProps {
+  content?: string
+  onEditStart?: (sectionId: string) => void
+  onEditEnd?: (sectionId: string, content: string) => void
+}
+
 interface PreviewProps {
   selectedStyles: {
     [key: string]: string
   }
   componentsOrder: string[]
   components: {
-    [key: string]: ComponentType<{
-      content?: string
-      onEditStart: (sectionId: string) => void
-      onEditEnd: (sectionId: string, content: string) => void
-    }>
+    [key: string]: ComponentType<ComponentProps>
   }
   isMobile: boolean
   editableContent: {
