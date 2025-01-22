@@ -1,60 +1,54 @@
-import React from "react"
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function Footer1() {
+    const footerNavs = [
+        {
+            href: "#",
+            name: "Terms",
+        },
+        {
+            href: "#",
+            name: "License",
+        },
+        {
+            href: "#",
+            name: "Privacy",
+        },
+        {
+            href: "#",
+            name: "About us",
+        },
+    ]
+
     return (
-        <footer className="bg-gray-900 text-white py-12">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-wrap justify-between items-center">
-                    <div className="w-full md:w-1/3 mb-6 md:mb-0">
-                        <h3 className="text-2xl font-bold mb-4">Your Company</h3>
-                        <p className="text-gray-400">Building the future, one pixel at a time.</p>
-                    </div>
-                    <div className="w-full md:w-1/3 mb-6 md:mb-0">
-                        <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-                        <ul className="space-y-2">
-                            <li>
-                                <a href="#" className="hover:text-gray-300 transition-colors">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:text-gray-300 transition-colors">
-                                    About
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:text-gray-300 transition-colors">
-                                    Services
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:text-gray-300 transition-colors">
-                                    Contact
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="w-full md:w-1/3">
-                        <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
-                        <div className="flex space-x-4">
-                            <a href="#" className="hover:text-gray-300 transition-colors">
-                                <Facebook size={24} />
-                            </a>
-                            <a href="#" className="hover:text-gray-300 transition-colors">
-                                <Twitter size={24} />
-                            </a>
-                            <a href="#" className="hover:text-gray-300 transition-colors">
-                                <Instagram size={24} />
-                            </a>
-                            <a href="#" className="hover:text-gray-300 transition-colors">
-                                <Linkedin size={24} />
-                            </a>
-                        </div>
+        <footer className="pt-10">
+            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
+                <div className="space-y-6 sm:max-w-md sm:mx-auto sm:text-center">
+                    <p>Nulla auctor metus vitae lectus iaculis, vel euismod massa efficitur.</p>
+                    <div className="items-center gap-x-3 space-y-3 sm:flex sm:justify-center sm:space-y-0">
+                        <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">Let's get started</Button>
+                        <Button variant="outline" className="w-full sm:w-auto">
+                            Get access
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 ml-2">
+                                <path
+                                    fillRule="evenodd"
+                                    d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </Button>
                     </div>
                 </div>
-                <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+                <div className="mt-10 py-10 border-t items-center justify-between sm:flex">
+                    <p>© {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+                    <ul className="flex flex-wrap items-center gap-4 mt-6 sm:text-sm sm:mt-0">
+                        {footerNavs.map((item, idx) => (
+                            <li key={idx} className="text-gray-800 hover:text-blue-600 duration-150">
+                                <Link href={item.href}>{item.name}</Link>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </footer>
