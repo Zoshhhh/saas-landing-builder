@@ -22,12 +22,12 @@ const TEMPLATES: Template[] = [
     {
         name: "Product Page",
         description: "Highlight your product with a gallery, pricing, and testimonials.",
-        components: ["header", "hero", "gallery", "pricing", "testimonials", "faq", "footer"],
+        components: ["header", "hero", "gallery", "features", "pricing", "testimonials", "cta", "faq", "footer"],
     },
     {
         name: "Service Page",
         description: "Present your services with detailed sections and calls to action.",
-        components: ["header", "hero", "services", "testimonials", "pricing", "contact", "footer"],
+        components: ["header", "hero", "services", "features", "testimonials", "pricing", "cta", "contact", "footer"],
     },
     {
         name: "Portfolio",
