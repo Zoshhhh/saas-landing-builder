@@ -1,7 +1,8 @@
 import React from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { LayoutTemplate, FileText } from "lucide-react"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { LayoutTemplate, FileText, ArrowRight } from "lucide-react"
 
 interface InitialChoiceDialogProps {
     open: boolean
@@ -13,29 +14,61 @@ interface InitialChoiceDialogProps {
 export function InitialChoiceDialog({ open, onOpenChange, onChooseBlank, onChooseTemplate }: InitialChoiceDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[700px]">
                 <DialogHeader>
-                    <DialogTitle>Welcome to Landing Page Generator</DialogTitle>
+                    <DialogTitle className="text-2xl">Welcome to Landing Page Generator</DialogTitle>
+                    <DialogDescription>Choose how you'd like to start building your landing page</DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <p className="text-center text-sm text-gray-500">Choose how you'd like to start your project:</p>
-                    <div className="grid grid-cols-2 gap-4">
-                        <Button
-                            onClick={onChooseBlank}
-                            className="h-24 flex flex-col items-center justify-center"
-                            variant="outline"
-                        >
-                            <FileText className="h-8 w-8 mb-2" />
-                            Start with Blank Page
-                        </Button>
-                        <Button
-                            onClick={onChooseTemplate}
-                            className="h-24 flex flex-col items-center justify-center"
-                            variant="outline"
-                        >
-                            <LayoutTemplate className="h-8 w-8 mb-2" />
-                            Start with Template
-                        </Button>
+                <div className="grid gap-6 pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <Card className="min-h-[400px] relative">
+                            <CardHeader>
+                                <CardTitle className="flex items-center">
+                                    <FileText className="h-6 w-6 mr-2 text-blue-500" />
+                                    Blank Page
+                                </CardTitle>
+                                <CardDescription>Start from scratch</CardDescription>
+                            </CardHeader>
+                            <CardContent className="pb-16">
+                                <ul className="list-disc list-inside space-y-1 text-sm">
+                                    <li>Full creative control</li>
+                                    <li>Build your page step-by-step</li>
+                                    <li>Ideal for unique designs</li>
+                                </ul>
+                            </CardContent>
+                            <CardFooter className="absolute bottom-0 left-0 right-0 p-4">
+                                <Button
+                                    onClick={onChooseBlank}
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200 py-3 text-lg font-semibold rounded-lg shadow-md hover:shadow-lg"
+                                >
+                                    Start Blank <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                        <Card className="min-h-[400px] relative">
+                            <CardHeader>
+                                <CardTitle className="flex items-center">
+                                    <LayoutTemplate className="h-6 w-6 mr-2 text-green-500" />
+                                    Template
+                                </CardTitle>
+                                <CardDescription>Choose a pre-designed layout</CardDescription>
+                            </CardHeader>
+                            <CardContent className="pb-16">
+                                <ul className="list-disc list-inside space-y-1 text-sm">
+                                    <li>Quick start with professional designs</li>
+                                    <li>Customizable templates</li>
+                                    <li>Variety of layouts for different needs</li>
+                                </ul>
+                            </CardContent>
+                            <CardFooter className="absolute bottom-0 left-0 right-0 p-4">
+                                <Button
+                                    onClick={onChooseTemplate}
+                                    className="w-full bg-green-500 hover:bg-green-600 text-white transition-colors duration-200 py-3 text-lg font-semibold rounded-lg shadow-md hover:shadow-lg"
+                                >
+                                    Browse Templates <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </CardFooter>
+                        </Card>
                     </div>
                 </div>
             </DialogContent>

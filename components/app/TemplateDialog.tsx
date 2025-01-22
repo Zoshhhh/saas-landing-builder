@@ -109,7 +109,7 @@ export function TemplateDialog({ open, onOpenChange, onSelectTemplate }: Templat
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">Choose a Template</DialogTitle>
                 </DialogHeader>
-                <ScrollArea className="h-[60vh] pr-4 mt-4">
+                <ScrollArea className="max-h-[calc(80vh-120px)] pr-4 mt-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {TEMPLATES.map((template, index) => (
                             <motion.div
@@ -136,20 +136,21 @@ interface TemplateCardProps {
 function TemplateCard({ template, onSelect }: TemplateCardProps) {
     return (
         <div className="bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl flex flex-col h-full">
-            <Skeleton className="w-full h-48" />
+            <Skeleton className="w-full h-36" />
             <div className="p-4 flex-grow flex flex-col">
-                <h3 className="text-lg font-semibold mb-2">{template.name}</h3>
-                <p className="text-sm text-gray-600 mb-4 flex-grow">{template.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
+                <h3 className="text-lg font-semibold mb-1">{template.name}</h3>
+                <p className="text-sm text-gray-600 mb-2 flex-grow">{template.description}</p>
+                <div className="flex flex-wrap gap-1 mb-2">
                     {template.components.map((component) => (
-                        <span key={component.id} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                        <span key={component.id} className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
               {component.id}
             </span>
                     ))}
                 </div>
-            </div>
-            <div className="p-4 bg-gray-50">
-                <Button onClick={() => onSelect(template.components)} className="w-full">
+                <Button
+                    onClick={() => onSelect(template.components)}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200 py-1.5 text-sm font-medium rounded-md shadow-sm hover:shadow-md"
+                >
                     Use this Template
                 </Button>
             </div>
