@@ -19,11 +19,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ComponentDialog } from "@/components/app/ComponentDialog"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"

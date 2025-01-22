@@ -66,6 +66,7 @@ export default function Home() {
   const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
   const [isInitialChoiceDialogOpen, setIsInitialChoiceDialogOpen] = useState(true)
+  const [showStartMessage, setShowStartMessage] = useState(false)
 
   useEffect(() => {
     console.log("State update:", { selectedStyles, componentsOrder, editableContent })
@@ -194,11 +195,12 @@ export default function Home() {
     setComponentsOrder(newComponentsOrder)
     setEditableContent(newEditableContent)
     setIsTemplateDialogOpen(false)
+    setIsInitialChoiceDialogOpen(false)
   }, [])
 
   const handleChooseBlank = useCallback(() => {
     setIsInitialChoiceDialogOpen(false)
-    // The page is already blank, so we don't need to do anything else
+    setShowStartMessage(true)
   }, [])
 
   const handleChooseTemplate = useCallback(() => {
@@ -305,12 +307,14 @@ export default function Home() {
             onOpenChange={setIsTemplateDialogOpen}
             onSelectTemplate={handleSelectTemplate}
         />
-        <InitialChoiceDialog
-            open={isInitialChoiceDialogOpen}
-            onOpenChange={setIsInitialChoiceDialogOpen}
-            onChooseBlank={handleChooseBlank}
-            onChooseTemplate={handleChooseTemplate}
-        />
+        {isInitialChoiceDialogOpen && (
+            <InitialChoiceDialog
+                open={isInitialChoiceDialogOpen}
+                onOpenChange={setIsInitialChoiceDialogOpen}
+                onChooseBlank={handleChooseBlank}
+                onChooseTemplate={handleChooseTemplate}
+            />
+        )}
       </>
   )
 }
