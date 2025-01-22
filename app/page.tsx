@@ -19,6 +19,10 @@ import FAQ2 from "@/components/templates/faq/FAQ2"
 import Pricing1 from "@/components/templates/pricing/Pricing1"
 import Pricing2 from "@/components/templates/pricing/Pricing2"
 import Pricing3 from "@/components/templates/pricing/Pricing3"
+import Testimonials1 from "@/components/templates/testimonials/Testimonials1"
+import Testimonials2 from "@/components/templates/testimonials/Testimonials2"
+import ImageGallery1 from "@/components/templates/gallery/ImageGallery1"
+import ImageGallery2 from "@/components/templates/gallery/ImageGallery2"
 import { Download, Smartphone, Laptop } from "lucide-react"
 import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDialog"
 import { TextEditor } from "../components/TextEditor"
@@ -45,6 +49,7 @@ export default function Home() {
           setComponentsOrder((prev) => [...prev, sectionId])
           setSelectedSection(sectionId)
           setEditableContent((prev) => ({ ...prev, [sectionId]: "Edit your content here" }))
+          console.log(`Added new component: ${sectionId}, style: ${style}`)
         } else {
           console.log(`Component ${sectionId} already exists.`)
         }
@@ -213,6 +218,10 @@ export default function Home() {
                             Pricing1,
                             Pricing2,
                             Pricing3,
+                            Testimonials1,
+                            Testimonials2,
+                            ImageGallery1,
+                            ImageGallery2,
                           }}
                           isMobile={isMobile}
                           editableContent={editableContent}

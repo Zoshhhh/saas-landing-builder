@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Layout, Type, CreditCard, HelpCircle, FootprintsIcon } from "lucide-react"
+import { Layout, Type, CreditCard, HelpCircle, FootprintsIcon, MessageSquare, Image } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -41,10 +41,20 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     ],
   },
   {
+    id: "gallery",
+    label: "Image Gallery",
+    icon: <Image className="h-5 w-5" />,
+    color: "bg-green-100",
+    variants: [
+      { name: "ImageGallery1", label: "Featured Image", darkMode: false },
+      { name: "ImageGallery2", label: "Grid with Lightbox", darkMode: false },
+    ],
+  },
+  {
     id: "pricing",
     label: "Pricing",
     icon: <CreditCard className="h-5 w-5" />,
-    color: "bg-green-100",
+    color: "bg-yellow-100",
     variants: [
       { name: "Pricing1", label: "Classic", darkMode: true },
       { name: "Pricing2", label: "Feature Comparison", darkMode: false },
@@ -52,10 +62,20 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     ],
   },
   {
+    id: "testimonials",
+    label: "Testimonials",
+    icon: <MessageSquare className="h-5 w-5" />,
+    color: "bg-purple-100",
+    variants: [
+      { name: "Testimonials1", label: "Grid Layout", darkMode: false },
+      { name: "Testimonials2", label: "Carousel", darkMode: false },
+    ],
+  },
+  {
     id: "faq",
     label: "FAQ",
     icon: <HelpCircle className="h-5 w-5" />,
-    color: "bg-yellow-100",
+    color: "bg-indigo-100",
     variants: [
       { name: "FAQ1", label: "Simple Accordion", darkMode: false },
       { name: "FAQ2", label: "Categorized with Links", darkMode: false },
@@ -65,7 +85,7 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     id: "footer",
     label: "Footer",
     icon: <FootprintsIcon className="h-5 w-5" />,
-    color: "bg-purple-100",
+    color: "bg-red-100",
     variants: [
       { name: "Footer1", label: "Simple", darkMode: true },
       { name: "Footer2", label: "With Links", darkMode: false },
@@ -180,14 +200,14 @@ interface VariantCardProps {
     label: string
     darkMode: boolean
   }
-  onClick: () => void
+  onClick: (variantName: string) => void
 }
 
 function VariantCard({ variant, onClick }: VariantCardProps) {
   return (
       <motion.button
           whileHover={{ scale: 1.02 }}
-          onClick={onClick}
+          onClick={() => onClick(variant.name)}
           className={cn(
               "w-full text-left rounded-lg overflow-hidden transition-colors hover:bg-gray-50",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500",
