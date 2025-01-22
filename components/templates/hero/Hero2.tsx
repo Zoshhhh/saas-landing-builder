@@ -1,39 +1,38 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import Image from "next/image"
 
 export default function Hero2() {
   return (
-    <section className="bg-gradient-to-br from-indigo-50 to-purple-100 py-24">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center space-y-8">
-            <h1 className="text-6xl font-bold tracking-tight text-gray-900">Build Something Amazing.</h1>
-
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Create stunning websites with our intuitive builder. Perfect for designers, developers, and creative
-              professionals.
+      <section className="py-16 mx-auto max-w-screen-xl px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="space-y-4 sm:text-center lg:text-left">
+            <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">
+              Optimize your website for
+              <span className="text-blue-600"> Search engine</span>
+            </h1>
+            <p className="text-gray-500 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
+              It is a long established fact that a reader will be distracted by the readable content of a page when
+              looking at its layout. The point of using Lorem Ipsum
             </p>
-
-            <div className="flex justify-center gap-4">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8">
-                Get Started
-              </Button>
-              <Button variant="outline" size="lg" className="px-8">
-                Learn More
-              </Button>
+            <div>
+              <p className="text-gray-800 py-3">Subscribe to our newsletter and we'll save your time</p>
+              <form className="items-center space-y-3 sm:justify-center sm:space-x-3 sm:space-y-0 sm:flex lg:justify-start">
+                <Input type="text" placeholder="Enter your email" className="text-gray-500 w-full sm:w-72" />
+                <Button type="submit" className="w-full sm:w-auto">
+                  Subscribe
+                </Button>
+              </form>
             </div>
           </div>
-
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white/60 backdrop-blur-sm rounded-lg p-6 text-center">
-                <div className="text-4xl font-bold text-indigo-600 mb-2">{`${i}0K+`}</div>
-                <div className="text-sm text-gray-600">{["Users", "Downloads", "Reviews", "Projects"][i - 1]}</div>
-              </div>
-            ))}
+          <div className="flex justify-center lg:justify-end">
+            <Skeleton className="w-full max-w-[500px] h-[300px] bg-gray-200" />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
   )
 }
 
