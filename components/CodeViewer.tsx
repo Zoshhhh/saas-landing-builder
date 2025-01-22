@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Check, Copy } from "lucide-react"
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
 
 interface CodeViewerProps {
     open: boolean
@@ -20,34 +22,9 @@ export function CodeViewer({ open, onOpenChange, code, fileName }: CodeViewerPro
         setTimeout(() => setCopied(false), 2000)
     }
 
-    React.useEffect(() => {
-        const style = document.createElement("style")
-        style.textContent = scrollbarStyles
-        document.head.appendChild(style)
-        return () => {
-            document.head.removeChild(style)
-        }
-    }, [])
-
-    const scrollbarStyles = `
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 8px;
-  }
-  .scrollbar-custom::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-`
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[800px] h-[80vh] flex flex-col">
+            <DialogContent className="sm:max-w-[800px] h-[80vh] flex flex-col bg-white">
                 <DialogHeader>
                     <DialogTitle>Source Code: {fileName}</DialogTitle>
                 </DialogHeader>
@@ -66,10 +43,19 @@ export function CodeViewer({ open, onOpenChange, code, fileName }: CodeViewerPro
                         )}
                     </Button>
                 </div>
-                <ScrollArea className="flex-grow relative scrollbar-custom">
-          <pre className="p-4 bg-gray-100 rounded-md">
-            <code className="text-sm font-mono">{code}</code>
-          </pre>
+                <ScrollArea className="flex-grow relative bg-gray-100 p-4 rounded-md">
+                    <SyntaxHighlighter
+                        language="typescript"
+                        style={vscDarkPlus}
+                        customStyle={{
+                            margin: 0,
+                            padding: "1rem",
+                            backgroundColor: "#1E1E1E",
+                            borderRadius: "0.5rem",
+                        }}
+                    >
+                        {code}
+                    </SyntaxHighlighter>
                 </ScrollArea>
             </DialogContent>
         </Dialog>
