@@ -13,6 +13,7 @@ import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDi
 import { TextEditor } from "../components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { TemplateDialog } from "@/components/app/TemplateDialog"
+import { InitialChoiceDialog } from "@/components/InitialChoiceDialog"
 import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
 
@@ -64,6 +65,7 @@ export default function Home() {
   const [tempContent, setTempContent] = useState("")
   const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
+  const [isInitialChoiceDialogOpen, setIsInitialChoiceDialogOpen] = useState(true)
 
   useEffect(() => {
     console.log("State update:", { selectedStyles, componentsOrder, editableContent })
@@ -194,6 +196,16 @@ export default function Home() {
     setIsTemplateDialogOpen(false)
   }, [])
 
+  const handleChooseBlank = useCallback(() => {
+    setIsInitialChoiceDialogOpen(false)
+    // The page is already blank, so we don't need to do anything else
+  }, [])
+
+  const handleChooseTemplate = useCallback(() => {
+    setIsInitialChoiceDialogOpen(false)
+    setIsTemplateDialogOpen(true)
+  }, [])
+
   const sections = componentsOrder.map((id) => {
     const style = selectedStyles[id]
     const componentOption = COMPONENT_OPTIONS.find((option) => option.id === id)
@@ -265,34 +277,40 @@ export default function Home() {
               </SidebarProvider>
             </div>
           </div>
-          <ComponentDialog
-              open={isComponentDialogOpen}
-              onOpenChange={setIsComponentDialogOpen}
-              onSelect={handleAdd}
-              existingComponents={componentsOrder}
-          />
-          <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
-            <DialogContent className="max-w-3xl max-h-[80vh]">
-              <DialogHeader>
-                <DialogTitle>Edit Content</DialogTitle>
-              </DialogHeader>
-              <div className="mt-4 max-h-[60vh] overflow-y-auto">
-                <TextEditor initialValue={tempContent} onChangeCallback={handleContentChange} />
-              </div>
-              <div className="flex justify-end space-x-2 mt-4">
-                <Button variant="outline" onClick={handleCancelEdit}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSaveContent}>Save</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <TemplateDialog
-              open={isTemplateDialogOpen}
-              onOpenChange={setIsTemplateDialogOpen}
-              onSelectTemplate={handleSelectTemplate}
-          />
         </TooltipProvider>
+        <ComponentDialog
+            open={isComponentDialogOpen}
+            onOpenChange={setIsComponentDialogOpen}
+            onSelect={handleAdd}
+            existingComponents={componentsOrder}
+        />
+        <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
+          <DialogContent className="max-w-3xl max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Edit Content</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4 max-h-[60vh] overflow-y-auto">
+              <TextEditor initialValue={tempContent} onChangeCallback={handleContentChange} />
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button variant="outline" onClick={handleCancelEdit}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveContent}>Save</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <TemplateDialog
+            open={isTemplateDialogOpen}
+            onOpenChange={setIsTemplateDialogOpen}
+            onSelectTemplate={handleSelectTemplate}
+        />
+        <InitialChoiceDialog
+            open={isInitialChoiceDialogOpen}
+            onOpenChange={setIsInitialChoiceDialogOpen}
+            onChooseBlank={handleChooseBlank}
+            onChooseTemplate={handleChooseTemplate}
+        />
       </>
   )
 }
