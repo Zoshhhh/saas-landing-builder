@@ -8,33 +8,51 @@ import Preview from "@/components/Preview"
 import { AppNavbar } from "@/components/app/Navbar"
 import { SidebarNavigation } from "@/components/app/Sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import Hero1 from "@/components/templates/hero/Hero1"
-import Hero2 from "@/components/templates/hero/Hero2"
-import Header1 from "@/components/templates/header/Header1"
-import Header2 from "@/components/templates/header/Header2"
-import Footer1 from "@/components/templates/footer/Footer1"
-import Footer2 from "@/components/templates/footer/Footer2"
-import FAQ1 from "@/components/templates/faq/FAQ1"
-import FAQ2 from "@/components/templates/faq/FAQ2"
-import Pricing1 from "@/components/templates/pricing/Pricing1"
-import Pricing2 from "@/components/templates/pricing/Pricing2"
-import Pricing3 from "@/components/templates/pricing/Pricing3"
-import Testimonials1 from "@/components/templates/testimonials/Testimonials1"
-import Testimonials2 from "@/components/templates/testimonials/Testimonials2"
-import ImageGallery1 from "@/components/templates/gallery/ImageGallery1"
-import ImageGallery2 from "@/components/templates/gallery/ImageGallery2"
 import { Download, Smartphone, Laptop, LayoutTemplate } from "lucide-react"
 import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDialog"
 import { TextEditor } from "../components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import Text1 from "@/components/templates/text/Text1"
-import Text2 from "@/components/templates/text/Text2"
 import { TemplateDialog } from "@/components/app/TemplateDialog"
-import Features from "@/components/templates/divers/Features"
-import CTA from "@/components/templates/divers/CTA"
-import Services from "@/components/templates/divers/Services"
-import Contact from "@/components/templates/divers/Contact"
-import About from "@/components/templates/divers/About"
+import dynamic from "next/dynamic"
+import type { ComponentType } from "react"
+
+interface ComponentProps {
+  content?: string
+  onEditStart: (sectionId: string) => void
+  onEditEnd: (sectionId: string, content: string) => void
+}
+
+const componentImports: { [key: string]: ComponentType<ComponentProps> } = {
+  Header1: dynamic(() => import("@/components/templates/header/Header1")),
+  Header2: dynamic(() => import("@/components/templates/header/Header2")),
+  Hero1: dynamic(() => import("@/components/templates/hero/Hero1")),
+  Hero2: dynamic(() => import("@/components/templates/hero/Hero2")),
+  Footer1: dynamic(() => import("@/components/templates/footer/Footer1")),
+  Footer2: dynamic(() => import("@/components/templates/footer/Footer2")),
+  FAQ1: dynamic(() => import("@/components/templates/faq/FAQ1")),
+  FAQ2: dynamic(() => import("@/components/templates/faq/FAQ2")),
+  Pricing1: dynamic(() => import("@/components/templates/pricing/Pricing1")),
+  Pricing2: dynamic(() => import("@/components/templates/pricing/Pricing2")),
+  Pricing3: dynamic(() => import("@/components/templates/pricing/Pricing3")),
+  Testimonials1: dynamic(() => import("@/components/templates/testimonials/Testimonials1")),
+  Testimonials2: dynamic(() => import("@/components/templates/testimonials/Testimonials2")),
+  ImageGallery1: dynamic(() => import("@/components/templates/gallery/ImageGallery1")),
+  ImageGallery2: dynamic(() => import("@/components/templates/gallery/ImageGallery2")),
+  Text1: dynamic(() => import("@/components/templates/text/Text1")),
+  Text2: dynamic(() => import("@/components/templates/text/Text2")),
+  Features: dynamic(() => import("@/components/templates/divers/Features")),
+  CTA: dynamic(() => import("@/components/templates/divers/CTA")),
+  Services: dynamic(() => import("@/components/templates/divers/Services")),
+  Contact: dynamic(() => import("@/components/templates/divers/Contact")),
+  About: dynamic(() => import("@/components/templates/divers/About")),
+  FeaturedPosts: dynamic(() => import("@/components/templates/blog/FeaturedPosts")),
+  PostGrid: dynamic(() => import("@/components/templates/blog/PostGrid")),
+  Newsletter: dynamic(() => import("@/components/templates/blog/Newsletter")),
+  Schedule: dynamic(() => import("@/components/templates/event/Schedule")),
+  Speakers: dynamic(() => import("@/components/templates/event/Speakers")),
+  Registration: dynamic(() => import("@/components/templates/event/Registration")),
+  Venue: dynamic(() => import("@/components/templates/event/Venue")),
+}
 
 export default function Home() {
   const [selectedStyles, setSelectedStyles] = useState<{ [key: string]: string }>({})
@@ -45,7 +63,7 @@ export default function Home() {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [tempContent, setTempContent] = useState("")
   const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
-  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false) // Added state for template dialog
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
 
   useEffect(() => {
     console.log("State update:", { selectedStyles, componentsOrder, editableContent })
@@ -159,20 +177,19 @@ export default function Home() {
     setEditableContent((prev) => ({ ...prev, [sectionId]: content }))
   }, [])
 
-  const handleSelectTemplate = useCallback((components: string[]) => {
+  const handleSelectTemplate = useCallback((components: Array<{ id: string; variant: string }>) => {
     const newSelectedStyles: { [key: string]: string } = {}
     const newEditableContent: { [key: string]: string } = {}
+    const newComponentsOrder: string[] = []
 
-    components.forEach((component) => {
-      const componentOption = COMPONENT_OPTIONS.find((option) => option.id === component)
-      if (componentOption) {
-        newSelectedStyles[component] = componentOption.variants[0].name
-        newEditableContent[component] = "Edit your content here"
-      }
+    components.forEach(({ id, variant }) => {
+      newSelectedStyles[id] = variant
+      newEditableContent[id] = "Edit your content here"
+      newComponentsOrder.push(id)
     })
 
     setSelectedStyles(newSelectedStyles)
-    setComponentsOrder(components)
+    setComponentsOrder(newComponentsOrder)
     setEditableContent(newEditableContent)
     setIsTemplateDialogOpen(false)
   }, [])
@@ -236,30 +253,7 @@ export default function Home() {
                       <Preview
                           selectedStyles={selectedStyles}
                           componentsOrder={componentsOrder}
-                          components={{
-                            Header1,
-                            Header2,
-                            Hero1,
-                            Hero2,
-                            Footer1,
-                            Footer2,
-                            FAQ1,
-                            FAQ2,
-                            Pricing1,
-                            Pricing2,
-                            Pricing3,
-                            Testimonials1,
-                            Testimonials2,
-                            ImageGallery1,
-                            ImageGallery2,
-                            Text1,
-                            Text2,
-                            Features,
-                            CTA,
-                            Services,
-                            Contact,
-                            About,
-                          }}
+                          components={componentImports}
                           isMobile={isMobile}
                           editableContent={editableContent}
                           onEditStart={handleEditStart}
