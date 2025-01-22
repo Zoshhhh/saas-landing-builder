@@ -14,7 +14,6 @@ import {
   Zap,
   PhoneCall,
   Info,
-  Megaphone,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -120,7 +119,7 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     color: "bg-indigo-100",
     variants: [
       { name: "Features", label: "Feature Grid", darkMode: false },
-      { name: "CTA", label: "Contact Form", darkMode: false },
+      { name: "CTA", label: "Call to Action", darkMode: false },
       { name: "Services", label: "Service Cards", darkMode: false },
       { name: "Contact", label: "Contact Form", darkMode: false },
       { name: "About", label: "About Section", darkMode: false },
@@ -132,13 +131,6 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Zap className="h-5 w-5" />,
     color: "bg-yellow-100",
     variants: [{ name: "Features", label: "Feature Grid", darkMode: false }],
-  },
-  {
-    id: "cta",
-    label: "Call to Action",
-    icon: <Megaphone className="h-5 w-5" />,
-    color: "bg-red-100",
-    variants: [{ name: "CTA", label: "Call to Action", darkMode: false }],
   },
 ]
 

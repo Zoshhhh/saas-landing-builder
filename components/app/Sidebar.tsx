@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import { DragDropContext, Droppable, Draggable, type DropResult } from "react-beautiful-dnd"
 import {
   Plus,
   ChevronUp,
@@ -43,7 +43,7 @@ interface SidebarNavigationProps {
   selectedSection: string | null
 }
 
-const getIconForSection = (sectionId: string) => {
+const getIconForSection = (sectionId: string): React.ReactElement => {
   switch (sectionId) {
     case "header":
       return <Layout className="h-4 w-4 mr-2" />
@@ -60,16 +60,16 @@ const getIconForSection = (sectionId: string) => {
   }
 }
 
-export function SidebarNavigation({
-                                    sections,
-                                    onAdd,
-                                    onSelect,
-                                    onDelete,
-                                    onMove,
-                                    selectedSection,
-                                  }: SidebarNavigationProps) {
+export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
+                                                                      sections,
+                                                                      onAdd,
+                                                                      onSelect,
+                                                                      onDelete,
+                                                                      onMove,
+                                                                      selectedSection,
+                                                                    }: SidebarNavigationProps) => {
   const [dialogOpen, setDialogOpen] = React.useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   const filteredSections = sections.filter((section) => section.label.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -77,7 +77,7 @@ export function SidebarNavigation({
     console.log("Sections updated:", sections)
   }, [sections])
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return
     }
@@ -135,7 +135,9 @@ export function SidebarNavigation({
                                   >
                                     <div className="flex items-center flex-1">
                                       {getIconForSection(section.id)}
-                                      <span className="text-sm">{section.label}</span>
+                                      <span className="text-sm">
+                                {section.id.charAt(0).toUpperCase() + section.id.slice(1)}
+                              </span>
                                       {section.darkMode ? (
                                           <svg
                                               xmlns="http://www.w3.org/2000/svg"
