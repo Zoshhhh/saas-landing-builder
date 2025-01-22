@@ -91,6 +91,16 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
       { name: "Footer2", label: "With Links", darkMode: false },
     ],
   },
+  {
+    id: "text",
+    label: "Text",
+    icon: <Type className="h-5 w-5" />,
+    color: "bg-purple-100",
+    variants: [
+      { name: "Text1", label: "Simple Text", darkMode: false },
+      { name: "Text2", label: "Two-Column Text", darkMode: false },
+    ],
+  },
 ]
 
 interface ComponentDialogProps {

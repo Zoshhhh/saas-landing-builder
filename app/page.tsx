@@ -27,6 +27,8 @@ import { Download, Smartphone, Laptop } from "lucide-react"
 import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDialog"
 import { TextEditor } from "../components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import Text1 from "@/components/templates/text/Text1"
+import Text2 from "@/components/templates/text/Text2"
 
 export default function Home() {
   const [selectedStyles, setSelectedStyles] = useState<{ [key: string]: string }>({})
@@ -222,6 +224,8 @@ export default function Home() {
                             Testimonials2,
                             ImageGallery1,
                             ImageGallery2,
+                            Text1,
+                            Text2,
                           }}
                           isMobile={isMobile}
                           editableContent={editableContent}
