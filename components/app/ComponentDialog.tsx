@@ -125,13 +125,6 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
       { name: "About", label: "About Section", darkMode: false },
     ],
   },
-  {
-    id: "features",
-    label: "Features",
-    icon: <Zap className="h-5 w-5" />,
-    color: "bg-yellow-100",
-    variants: [{ name: "Features", label: "Feature Grid", darkMode: false }],
-  },
 ]
 
 interface ComponentDialogProps {
