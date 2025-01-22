@@ -2,21 +2,9 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Layers } from "lucide-react"
 
-interface Header1Props {
-  content?: string
-  onEditStart: (sectionId: string) => void
-  onEditEnd: (sectionId: string, content: string) => void
-}
+type Header1Props = {}
 
-export default function Header1({ content, onEditStart, onEditEnd }: Header1Props) {
-  const handleEdit = () => {
-    onEditStart("header")
-  }
-
-  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-    onEditEnd("header", event.target.innerHTML)
-  }
-
+export default function Header1(): JSX.Element {
   return (
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
@@ -49,13 +37,6 @@ export default function Header1({ content, onEditStart, onEditEnd }: Header1Prop
             </Button>
           </div>
         </div>
-        <div
-            contentEditable
-            onFocus={handleEdit}
-            onBlur={handleBlur}
-            dangerouslySetInnerHTML={{ __html: content || "" }}
-            className="mt-4 p-2 border border-dashed border-gray-300 rounded"
-        />
       </header>
   )
 }
