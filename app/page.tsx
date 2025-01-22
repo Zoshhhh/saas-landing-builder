@@ -29,7 +29,12 @@ import { TextEditor } from "../components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import Text1 from "@/components/templates/text/Text1"
 import Text2 from "@/components/templates/text/Text2"
-import { TemplateDialog } from "@/components/app/TemplateDialog" // Added import for TemplateDialog
+import { TemplateDialog } from "@/components/app/TemplateDialog"
+import Features from "@/components/templates/divers/Features"
+import CTA from "@/components/templates/divers/CTA"
+import Services from "@/components/templates/divers/Services"
+import Contact from "@/components/templates/divers/Contact"
+import About from "@/components/templates/divers/About"
 
 export default function Home() {
   const [selectedStyles, setSelectedStyles] = useState<{ [key: string]: string }>({})
@@ -249,6 +254,11 @@ export default function Home() {
                             ImageGallery2,
                             Text1,
                             Text2,
+                            Features,
+                            CTA,
+                            Services,
+                            Contact,
+                            About,
                           }}
                           isMobile={isMobile}
                           editableContent={editableContent}

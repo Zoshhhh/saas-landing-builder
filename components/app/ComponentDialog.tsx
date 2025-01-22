@@ -3,7 +3,18 @@
 import * as React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Layout, Type, CreditCard, HelpCircle, FootprintsIcon, MessageSquare, Image } from "lucide-react"
+import {
+  Layout,
+  Type,
+  CreditCard,
+  HelpCircle,
+  FootprintsIcon,
+  MessageSquare,
+  Image,
+  Zap,
+  PhoneCall,
+  Info,
+} from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -99,6 +110,19 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     variants: [
       { name: "Text1", label: "Simple Text", darkMode: false },
       { name: "Text2", label: "Two-Column Text", darkMode: false },
+    ],
+  },
+  {
+    id: "divers",
+    label: "Divers",
+    icon: <Layout className="h-5 w-5" />,
+    color: "bg-indigo-100",
+    variants: [
+      { name: "Features", label: "Feature Grid", darkMode: false },
+      { name: "CTA", label: "Call to Action", darkMode: false },
+      { name: "Services", label: "Service Cards", darkMode: false },
+      { name: "Contact", label: "Contact Form", darkMode: false },
+      { name: "About", label: "About Section", darkMode: false },
     ],
   },
 ]
