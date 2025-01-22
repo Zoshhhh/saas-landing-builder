@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import type { ComponentType } from "react"
+import { BrowserFrame } from "./BrowserFrame"
 
 interface PreviewProps {
   selectedStyles: {
@@ -7,16 +8,34 @@ interface PreviewProps {
   }
   componentsOrder: string[]
   components: {
-    [key: string]: ComponentType
+    [key: string]: ComponentType<{
+      content?: string
+      onEditStart: (sectionId: string) => void
+      onEditEnd: (sectionId: string, content: string) => void
+    }>
   }
   isMobile: boolean
+  editableContent: {
+    [key: string]: string
+  }
+  onEditStart: (sectionId: string) => void
+  onEditEnd: (sectionId: string, content: string) => void
 }
 
-export default function Preview({ selectedStyles, componentsOrder, components, isMobile }: PreviewProps) {
+export default function Preview({
+                                  selectedStyles,
+                                  componentsOrder,
+                                  components,
+                                  isMobile,
+                                  editableContent,
+                                  onEditStart,
+                                  onEditEnd,
+                                }: PreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeHeight, setIframeHeight] = useState("100vh")
 
   useEffect(() => {
+    console.log("Preview update:", { componentsOrder, selectedStyles, editableContent })
     const updateIframeContent = () => {
       if (iframeRef.current) {
         const iframeDoc = iframeRef.current.contentDocument
@@ -29,7 +48,10 @@ export default function Preview({ selectedStyles, componentsOrder, components, i
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <style>
-                  body { margin: 0; font-family: sans-serif; }
+                  body { 
+                    margin: 0; 
+                    font-family: system-ui, -apple-system, sans-serif;
+                  }
                 </style>
                 <script src="https://cdn.tailwindcss.com"></script>
               </head>
@@ -45,16 +67,33 @@ export default function Preview({ selectedStyles, componentsOrder, components, i
             import("react-dom/client").then(({ createRoot }) => {
               const reactRoot = createRoot(root)
               reactRoot.render(
-                <React.StrictMode>
-                  {componentsOrder.map((section) => {
-                    const style = selectedStyles[section]
-                    if (style) {
-                      const Component = components[style]
-                      return Component ? <Component key={`${section}-${style}`} /> : null
-                    }
-                    return null
-                  })}
-                </React.StrictMode>,
+                  <React.StrictMode>
+                    {componentsOrder.map((section, index) => {
+                      const style = selectedStyles[section]
+                      if (style) {
+                        const Component = components[style]
+                        if (Component) {
+                          // Add null check for editableContent[section]
+                          const content =
+                              editableContent && editableContent[section] !== undefined ? editableContent[section] : ""
+                          console.log(`Rendering section: ${section}, style: ${style}, content: ${content}`)
+                          return (
+                              <Component
+                                  key={`${section}-${style}-${index}`}
+                                  content={content}
+                                  onEditStart={() => onEditStart(section)}
+                                  onEditEnd={(newContent) => onEditEnd(section, newContent)}
+                              />
+                          )
+                        } else {
+                          console.warn(`Component not found for style: ${style}`)
+                        }
+                      } else {
+                        console.warn(`Style not found for section: ${section}`)
+                      }
+                      return null
+                    })}
+                  </React.StrictMode>,
               )
             })
           }
@@ -81,16 +120,25 @@ export default function Preview({ selectedStyles, componentsOrder, components, i
         resizeObserver.unobserve(iframeRef.current)
       }
     }
-  }, [selectedStyles, componentsOrder, components])
+  }, [selectedStyles, componentsOrder, components, editableContent, onEditStart, onEditEnd])
 
   return (
-    <div
-      className={`w-full h-full overflow-hidden transition-all duration-300 ease-in-out ${
-        isMobile ? "max-w-sm mx-auto" : ""
-      }`}
-    >
-      <iframe ref={iframeRef} title="Preview" className="w-full h-full border-0 transition-all duration-300" />
-    </div>
+      <div className="w-full h-full flex items-center justify-center bg-gray-100 p-6">
+        <div
+            className={`relative transition-all duration-300 ease-in-out shadow-2xl ${
+                isMobile ? "w-[390px]" : "w-full max-w-[1280px] min-w-[800px]"
+            }`}
+        >
+          <BrowserFrame isMobile={isMobile}>
+            <iframe
+                ref={iframeRef}
+                title="Preview"
+                className="w-full h-full border-0 transition-all duration-300"
+                style={{ height: iframeHeight }}
+            />
+          </BrowserFrame>
+        </div>
+      </div>
   )
 }
 
