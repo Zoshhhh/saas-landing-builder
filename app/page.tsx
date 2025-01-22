@@ -23,12 +23,13 @@ import Testimonials1 from "@/components/templates/testimonials/Testimonials1"
 import Testimonials2 from "@/components/templates/testimonials/Testimonials2"
 import ImageGallery1 from "@/components/templates/gallery/ImageGallery1"
 import ImageGallery2 from "@/components/templates/gallery/ImageGallery2"
-import { Download, Smartphone, Laptop } from "lucide-react"
+import { Download, Smartphone, Laptop, LayoutTemplate } from "lucide-react"
 import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDialog"
 import { TextEditor } from "../components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import Text1 from "@/components/templates/text/Text1"
 import Text2 from "@/components/templates/text/Text2"
+import { TemplateDialog } from "@/components/app/TemplateDialog" // Added import for TemplateDialog
 
 export default function Home() {
   const [selectedStyles, setSelectedStyles] = useState<{ [key: string]: string }>({})
@@ -39,6 +40,7 @@ export default function Home() {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [tempContent, setTempContent] = useState("")
   const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false) // Added state for template dialog
 
   useEffect(() => {
     console.log("State update:", { selectedStyles, componentsOrder, editableContent })
@@ -152,6 +154,24 @@ export default function Home() {
     setEditableContent((prev) => ({ ...prev, [sectionId]: content }))
   }, [])
 
+  const handleSelectTemplate = useCallback((components: string[]) => {
+    const newSelectedStyles: { [key: string]: string } = {}
+    const newEditableContent: { [key: string]: string } = {}
+
+    components.forEach((component) => {
+      const componentOption = COMPONENT_OPTIONS.find((option) => option.id === component)
+      if (componentOption) {
+        newSelectedStyles[component] = componentOption.variants[0].name
+        newEditableContent[component] = "Edit your content here"
+      }
+    })
+
+    setSelectedStyles(newSelectedStyles)
+    setComponentsOrder(components)
+    setEditableContent(newEditableContent)
+    setIsTemplateDialogOpen(false)
+  }, [])
+
   const sections = componentsOrder.map((id) => {
     const style = selectedStyles[id]
     const componentOption = COMPONENT_OPTIONS.find((option) => option.id === id)
@@ -193,6 +213,9 @@ export default function Home() {
                         />
                         <Smartphone className={`h-5 w-5 ${isMobile ? "text-blue-500" : "text-gray-400"}`} />
                       </div>
+                      <Button onClick={() => setIsTemplateDialogOpen(true)} variant="outline" className="mr-2">
+                        <LayoutTemplate className="mr-2 h-5 w-5" /> Templates
+                      </Button>{" "}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button onClick={handleDownload} className="bg-blue-500 hover:bg-blue-600">
@@ -260,6 +283,11 @@ export default function Home() {
               </div>
             </DialogContent>
           </Dialog>
+          <TemplateDialog
+              open={isTemplateDialogOpen}
+              onOpenChange={setIsTemplateDialogOpen}
+              onSelectTemplate={handleSelectTemplate}
+          />
         </TooltipProvider>
       </>
   )
