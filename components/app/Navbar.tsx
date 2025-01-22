@@ -1,6 +1,6 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
-import { Layers, UserCircle } from "lucide-react"
+import { UserCircle } from "lucide-react"
 
 export function AppNavbar() {
   return (
