@@ -21,9 +21,6 @@ export function AppNavbar() {
                 </Link>
               </Button>
               <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
                 <Link href="/documentation">
                   <HelpCircle className="mr-2 h-5 w-5" />
                   Documentation

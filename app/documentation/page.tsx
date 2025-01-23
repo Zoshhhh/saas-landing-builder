@@ -57,7 +57,7 @@ export default function DocumentationPage() {
                 <Sidebar className="w-64 border-r">
                     <SidebarHeader className="p-4 flex items-center justify-between">
                         <h2 className="text-xl font-semibold">Documentation</h2>
-                        <Link href="/">
+                        <Link href="/dashboard">
                             <Button variant="default" size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
                                 <ChevronLeft className="mr-2 h-4 w-4" />
                                 Back to Dashboard
