@@ -120,6 +120,9 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
       { name: "Services", label: "Service Cards", darkMode: false },
       { name: "Contact", label: "Contact Form", darkMode: false },
       { name: "About", label: "About Section", darkMode: false },
+      { name: "FeaturedPosts", label: "Featured Posts", darkMode: false },
+      { name: "Newsletter", label: "Newsletter", darkMode: false },
+      { name: "PostGrid", label: "Post Grid", darkMode: false },
     ],
   },
 ]

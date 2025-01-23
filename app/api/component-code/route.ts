@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import fs from "fs"
+import fs from "fs/promises"
 import path from "path"
 
 export async function GET(request: Request) {
@@ -14,12 +14,27 @@ export async function GET(request: Request) {
     const filePath = path.join(process.cwd(), "components", "templates", id, `${style}.tsx`)
 
     try {
-        const fileContent = await fs.promises.readFile(filePath, "utf8")
+        const fileContent = await fs.readFile(filePath, "utf8")
         return new NextResponse(fileContent, {
             headers: { "Content-Type": "text/plain" },
         })
     } catch (error) {
-        console.error("Error reading component file:", error)
+        console.error(`Error reading component file: ${filePath}`, error)
+
+        // Check if the directory exists
+        try {
+            await fs.access(path.dirname(filePath))
+        } catch {
+            return NextResponse.json({ error: `Directory not found: ${path.dirname(filePath)}` }, { status: 404 })
+        }
+
+        // Check if the file exists
+        try {
+            await fs.access(filePath)
+        } catch {
+            return NextResponse.json({ error: `File not found: ${filePath}` }, { status: 404 })
+        }
+
         return NextResponse.json({ error: "Failed to read component file" }, { status: 500 })
     }
 }
