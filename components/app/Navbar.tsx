@@ -16,6 +16,9 @@ export function AppNavbar() {
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
+                <Link href="/">Home</Link>
+              </Button>
+              <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
                 <Link href="/documentation">
                   <HelpCircle className="mr-2 h-5 w-5" />
                   Documentation
