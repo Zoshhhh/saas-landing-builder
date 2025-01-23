@@ -1,7 +1,7 @@
 import React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Check, Copy, FileCode } from "lucide-react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
@@ -24,7 +24,7 @@ export function CodeViewer({ open, onOpenChange, code, fileName }: CodeViewerPro
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[800px] h-[80vh] flex flex-col bg-white transition-all duration-300 ease-in-out">
+            <DialogContent className="sm:max-w-[90vw] w-full h-[90vh] flex flex-col bg-white transition-all duration-300 ease-in-out">
                 <DialogHeader className="border-b pb-2">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="flex items-center space-x-2 text-sm">
@@ -43,22 +43,25 @@ export function CodeViewer({ open, onOpenChange, code, fileName }: CodeViewerPro
                     </div>
                 </DialogHeader>
                 <ScrollArea className="flex-grow relative bg-gray-100 p-4 rounded-md">
-                    <SyntaxHighlighter
-                        language="typescript"
-                        style={vscDarkPlus}
-                        customStyle={{
-                            margin: 0,
-                            padding: "0.75rem",
-                            backgroundColor: "#1E1E1E",
-                            borderRadius: "0.5rem",
-                            fontSize: "13px",
-                            lineHeight: 1.5,
-                        }}
-                        showLineNumbers={true}
-                        lineNumberStyle={{ minWidth: "2em", paddingRight: "0.5em", color: "#606366", fontSize: "12px" }}
-                    >
-                        {code}
-                    </SyntaxHighlighter>
+                    <div className="min-w-max">
+                        <SyntaxHighlighter
+                            language="typescript"
+                            style={vscDarkPlus}
+                            customStyle={{
+                                margin: 0,
+                                padding: "0.75rem",
+                                backgroundColor: "#1E1E1E",
+                                borderRadius: "0.5rem",
+                                fontSize: "13px",
+                                lineHeight: 1.5,
+                            }}
+                            showLineNumbers={true}
+                            lineNumberStyle={{ minWidth: "2em", paddingRight: "0.5em", color: "#606366", fontSize: "12px" }}
+                        >
+                            {code}
+                        </SyntaxHighlighter>
+                    </div>
+                    <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             </DialogContent>
         </Dialog>
