@@ -11,12 +11,17 @@ export default function Newsletter() {
                     <p className="text-gray-600 mb-6">
                         Stay up to date with our latest articles, tips, and insights. We promise not to spam you!
                     </p>
-                    <form className="flex flex-col sm:flex-row gap-4">
-                        <Input type="email" placeholder="Enter your email address" className="flex-grow" />
-                        <Button type="submit">Subscribe</Button>
+                    <form className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="w-full sm:w-auto sm:flex-1 max-w-xs">
+                            <Input type="email" placeholder="Enter your email address" className="w-full" />
+                        </div>
+                        <Button type="submit" className="w-full sm:w-auto">
+                            Subscribe
+                        </Button>
                     </form>
                 </div>
             </div>
         </section>
     )
 }
+
