@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
 import { Menu, X, LayoutTemplate } from "lucide-react"
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, SignUpButton } from "@clerk/nextjs"
 
 export function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const { isSignedIn } = useAuth()
 
     useEffect(() => {
         const handleResize = () => {
@@ -87,12 +89,21 @@ export function Navigation() {
 
                     {/* User Actions */}
                     <div className="hidden lg:flex items-center space-x-4">
-                        <Button variant="ghost" size="sm" className="text-blue-800 hover:text-blue-600">
-                            Login
-                        </Button>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                            Get Started
-                        </Button>
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <Button variant="ghost" size="sm" className="text-blue-800 hover:text-blue-600">
+                                    Login
+                                </Button>
+                            </SignInButton>
+                            <SignUpButton mode="modal">
+                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                                    Get Started
+                                </Button>
+                            </SignUpButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <UserButton afterSignOutUrl="/" />
+                        </SignedIn>
                     </div>
 
                     {/* Mobile Menu Toggle */}
@@ -113,12 +124,23 @@ export function Navigation() {
                         <Link href="#pricing" className="block text-blue-800 hover:text-blue-600">
                             Pricing
                         </Link>
-                        <Button variant="ghost" size="sm" className="w-full text-blue-800 hover:text-blue-600">
-                            Login
-                        </Button>
-                        <Button size="sm" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white">
-                            Get Started
-                        </Button>
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <Button variant="ghost" size="sm" className="w-full text-blue-800 hover:text-blue-600">
+                                    Login
+                                </Button>
+                            </SignInButton>
+                            <SignUpButton mode="modal">
+                                <Button size="sm" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white">
+                                    Get Started
+                                </Button>
+                            </SignUpButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <div className="mt-2">
+                                <UserButton afterSignOutUrl="/" />
+                            </div>
+                        </SignedIn>
                     </div>
                 )}
             </nav>
