@@ -49,7 +49,7 @@ export function Features() {
         <div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-16 justify-between md:px-8 lg:flex">
           <div>
             <div className="max-w-xl space-y-3">
-              <h3 className="text-indigo-600 font-semibold">Features</h3>
+              <h3 className="text-blue-500 font-semibold">Features</h3>
               <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">Simple solutions for complex issues</p>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius, enim ex
@@ -60,7 +60,7 @@ export function Features() {
               <ul className="space-y-8">
                 {features.map((item, idx) => (
                     <li key={idx} className="flex gap-x-4">
-                      <div className="flex-none w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
+                      <div className="flex-none w-12 h-12 bg-indigo-50 text-blue-500 rounded-lg flex items-center justify-center">
                         {item.icon}
                       </div>
                       <div>
