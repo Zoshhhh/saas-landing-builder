@@ -12,8 +12,9 @@ import {
     NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
-import { Menu, X, LayoutTemplate } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs"
+import Image from "next/image"
 
 export function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -35,13 +36,20 @@ export function Navigation() {
             <nav className="rounded-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-lg mx-4 my-2 w-full max-w-6xl z-50">
                 <div className="flex h-16 items-center justify-between px-6">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <LayoutTemplate className="h-8 w-8 text-blue-500" />
-                        <span className="font-bold text-xl text-blue-800">Landing Page Generator</span>
-                    </Link>
+                    <div className="flex items-center w-1/4">
+                        <Link href="/" className="flex items-center justify-center">
+                            <Image
+                                src="/logo.png"
+                                alt="Landing Page Generator Logo"
+                                width={48}
+                                height={48}
+                                className="rounded-full"
+                            />
+                        </Link>
+                    </div>
 
                     {/* Desktop Navigation Menu */}
-                    <div className="hidden lg:block">
+                    <div className="hidden lg:flex items-center justify-center w-1/2">
                         <NavigationMenu>
                             <NavigationMenuList>
                                 {/* Products Dropdown */}
@@ -88,7 +96,7 @@ export function Navigation() {
                     </div>
 
                     {/* User Actions */}
-                    <div className="hidden lg:flex items-center space-x-4">
+                    <div className="hidden lg:flex items-center justify-end w-1/4 space-x-4">
                         <SignedOut>
                             <SignInButton mode="modal">
                                 <Button variant="ghost" size="sm" className="text-blue-800 hover:text-blue-600">
@@ -112,9 +120,11 @@ export function Navigation() {
                     </div>
 
                     {/* Mobile Menu Toggle */}
-                    <button className="lg:hidden text-blue-800" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                        {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                    </button>
+                    <div className="lg:hidden flex items-center">
+                        <button className="text-blue-800" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Mobile Menu */}
