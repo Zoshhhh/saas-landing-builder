@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
 import { Menu, X, LayoutTemplate } from "lucide-react"
-import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, SignUpButton } from "@clerk/nextjs"
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs"
 
 export function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -95,13 +95,18 @@ export function Navigation() {
                                     Login
                                 </Button>
                             </SignInButton>
-                            <SignUpButton mode="modal">
+                            <Link href="/sign-up">
                                 <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                                     Get Started
                                 </Button>
-                            </SignUpButton>
+                            </Link>
                         </SignedOut>
                         <SignedIn>
+                            <Link href="/dashboard">
+                                <Button variant="ghost" size="sm" className="text-blue-800 hover:text-blue-600">
+                                    Dashboard
+                                </Button>
+                            </Link>
                             <UserButton afterSignOutUrl="/" />
                         </SignedIn>
                     </div>
@@ -130,13 +135,18 @@ export function Navigation() {
                                     Login
                                 </Button>
                             </SignInButton>
-                            <SignUpButton mode="modal">
+                            <Link href="/sign-up">
                                 <Button size="sm" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white">
                                     Get Started
                                 </Button>
-                            </SignUpButton>
+                            </Link>
                         </SignedOut>
                         <SignedIn>
+                            <Link href="/dashboard">
+                                <Button variant="ghost" size="sm" className="w-full text-blue-800 hover:text-blue-600">
+                                    Dashboard
+                                </Button>
+                            </Link>
                             <div className="mt-2">
                                 <UserButton afterSignOutUrl="/" />
                             </div>
