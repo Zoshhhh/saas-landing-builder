@@ -16,6 +16,7 @@ import { TemplateDialog } from "@/components/app/TemplateDialog"
 import { InitialChoiceDialog } from "@/components/InitialChoiceDialog"
 import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
+import { HelpCircle } from "lucide-react"
 
 interface ComponentProps {
     content?: string
@@ -230,6 +231,33 @@ export default function Home() {
             darkMode: variant?.darkMode || false,
         }
     })
+
+    const saveState = useCallback(() => {
+        const state = {
+            selectedStyles,
+            componentsOrder,
+            editableContent,
+        }
+        localStorage.setItem("dashboardState", JSON.stringify(state))
+    }, [selectedStyles, componentsOrder, editableContent])
+
+    const loadState = useCallback(() => {
+        const savedState = localStorage.getItem("dashboardState")
+        if (savedState) {
+            const state = JSON.parse(savedState)
+            setSelectedStyles(state.selectedStyles)
+            setComponentsOrder(state.componentsOrder)
+            setEditableContent(state.editableContent)
+        }
+    }, [])
+
+    useEffect(() => {
+        loadState()
+    }, [loadState])
+
+    useEffect(() => {
+        saveState()
+    }, [selectedStyles, componentsOrder, editableContent, saveState])
 
     return (
         <>
