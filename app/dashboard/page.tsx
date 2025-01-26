@@ -65,8 +65,17 @@ export default function Home() {
     const [tempContent, setTempContent] = useState("")
     const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
     const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
-    const [isInitialChoiceDialogOpen, setIsInitialChoiceDialogOpen] = useState(true)
+    const [hasInitialChoice, setHasInitialChoice] = useState<boolean | null>(null)
     const [showStartMessage, setShowStartMessage] = useState(false)
+
+    useEffect(() => {
+        const hasVisitedDashboard = localStorage.getItem("hasVisitedDashboard")
+        if (hasVisitedDashboard === null) {
+            setHasInitialChoice(false)
+        } else {
+            setHasInitialChoice(true)
+        }
+    }, [])
 
     useEffect(() => {
         console.log("State update:", { selectedStyles, componentsOrder, editableContent })
@@ -195,16 +204,18 @@ export default function Home() {
         setComponentsOrder(newComponentsOrder)
         setEditableContent(newEditableContent)
         setIsTemplateDialogOpen(false)
-        setIsInitialChoiceDialogOpen(false)
+        setHasInitialChoice(true)
     }, [])
 
     const handleChooseBlank = useCallback(() => {
-        setIsInitialChoiceDialogOpen(false)
+        localStorage.setItem("hasVisitedDashboard", "true")
+        setHasInitialChoice(true)
         setShowStartMessage(true)
     }, [])
 
     const handleChooseTemplate = useCallback(() => {
-        setIsInitialChoiceDialogOpen(false)
+        localStorage.setItem("hasVisitedDashboard", "true")
+        setHasInitialChoice(true)
         setIsTemplateDialogOpen(true)
     }, [])
 
@@ -307,10 +318,10 @@ export default function Home() {
                 onOpenChange={setIsTemplateDialogOpen}
                 onSelectTemplate={handleSelectTemplate}
             />
-            {isInitialChoiceDialogOpen && (
+            {hasInitialChoice === false && (
                 <InitialChoiceDialog
-                    open={isInitialChoiceDialogOpen}
-                    onOpenChange={setIsInitialChoiceDialogOpen}
+                    open={true}
+                    onOpenChange={() => {}}
                     onChooseBlank={handleChooseBlank}
                     onChooseTemplate={handleChooseTemplate}
                 />
