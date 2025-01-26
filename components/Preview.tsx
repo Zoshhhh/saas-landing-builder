@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import type { ComponentType } from "react"
 import { BrowserFrame } from "./BrowserFrame"
+import { cn } from "@/lib/utils"
 
 interface ComponentProps {
   content?: string
@@ -22,6 +23,7 @@ interface PreviewProps {
   }
   onEditStart: (sectionId: string) => void
   onEditEnd: (sectionId: string, content: string) => void
+  className?: string
 }
 
 export default function Preview({
@@ -32,6 +34,7 @@ export default function Preview({
                                   editableContent,
                                   onEditStart,
                                   onEditEnd,
+                                  className,
                                 }: PreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeHeight, setIframeHeight] = useState("100vh")
@@ -125,11 +128,12 @@ export default function Preview({
   }, [selectedStyles, componentsOrder, components, editableContent, onEditStart, onEditEnd])
 
   return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100 p-6">
+      <div className={cn("w-full h-full flex items-center justify-center bg-gray-100 p-6", className)}>
         <div
-            className={`relative transition-all duration-300 ease-in-out shadow-2xl ${
-                isMobile ? "w-[390px]" : "w-full max-w-[1280px] min-w-[800px]"
-            }`}
+            className={cn(
+                "relative transition-all duration-300 ease-in-out shadow-2xl",
+                isMobile ? "w-[390px]" : "w-full max-w-[1280px] min-w-[800px]",
+            )}
         >
           <BrowserFrame isMobile={isMobile}>
             <iframe

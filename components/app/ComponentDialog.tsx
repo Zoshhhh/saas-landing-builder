@@ -11,6 +11,9 @@ import {
   FootprintsIcon,
   MessageSquare,
   Image,
+  Zap,
+  PhoneCall,
+  Info,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -136,11 +139,25 @@ interface ComponentDialogProps {
 
 export function ComponentDialog({ open, onOpenChange, onSelect, existingComponents }: ComponentDialogProps) {
   const [selectedComponent, setSelectedComponent] = React.useState<ComponentOption | null>(null)
-  const availableComponents = COMPONENT_OPTIONS.filter((component) => !existingComponents.includes(component.id))
 
-  if (availableComponents.length === 0) {
-    return null
+  // Réinitialiser le composant sélectionné quand le dialogue s'ouvre
+  React.useEffect(() => {
+    if (open) {
+      setSelectedComponent(null)
+    }
+  }, [open])
+
+  const handleSelect = (componentId: string, variantName: string) => {
+    onSelect(componentId, variantName)
+    onOpenChange(false) // Ferme le dialogue après la sélection
   }
+
+  const availableComponents = COMPONENT_OPTIONS.map((component) => ({
+    ...component,
+    disabled:
+        (component.id === "header" && existingComponents.some((c) => c.startsWith("header"))) ||
+        (component.id === "footer" && existingComponents.some((c) => c.startsWith("footer"))),
+  }))
 
   return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -179,10 +196,7 @@ export function ComponentDialog({ open, onOpenChange, onSelect, existingComponen
                               <VariantCard
                                   key={variant.name}
                                   variant={variant}
-                                  onClick={() => {
-                                    onSelect(selectedComponent.id, variant.name)
-                                    onOpenChange(false)
-                                  }}
+                                  onClick={() => handleSelect(selectedComponent.id, variant.name)}
                               />
                           ))}
                         </div>
@@ -208,7 +222,7 @@ export function ComponentDialog({ open, onOpenChange, onSelect, existingComponen
 }
 
 interface ComponentButtonProps {
-  component: ComponentOption
+  component: ComponentOption & { disabled?: boolean }
   isSelected: boolean
   onClick: () => void
 }
@@ -219,11 +233,18 @@ function ComponentButton({ component, isSelected, onClick }: ComponentButtonProp
           className={cn(
               "flex items-center w-full px-3 py-2 text-left transition-colors text-sm",
               isSelected ? "bg-gray-100" : "hover:bg-gray-50",
+              component.disabled && "opacity-50 cursor-not-allowed",
           )}
           onClick={onClick}
+          disabled={component.disabled}
       >
         <span className={cn("p-1.5 rounded-md mr-2", component.color)}>{component.icon}</span>
         <span className="font-medium">{component.label}</span>
+        {component.disabled && (
+            <span className="ml-auto text-xs text-gray-500">
+          {component.id === "header" || component.id === "footer" ? "(Already added)" : ""}
+        </span>
+        )}
       </button>
   )
 }
@@ -234,14 +255,14 @@ interface VariantCardProps {
     label: string
     darkMode: boolean
   }
-  onClick: (variantName: string) => void
+  onClick: () => void
 }
 
 function VariantCard({ variant, onClick }: VariantCardProps) {
   return (
       <motion.button
           whileHover={{ scale: 1.02 }}
-          onClick={() => onClick(variant.name)}
+          onClick={onClick}
           className={cn(
               "w-full text-left rounded-lg overflow-hidden transition-colors hover:bg-gray-50",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500",

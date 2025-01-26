@@ -19,6 +19,11 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ComponentDialog } from "@/components/app/ComponentDialog"
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
@@ -41,7 +46,7 @@ interface SidebarNavigationProps {
 }
 
 const getIconForSection = (sectionId: string): React.ReactElement => {
-  switch (sectionId) {
+  switch (sectionId.split("-")[0]) {
     case "header":
       return <Layout className="h-4 w-4 mr-2" />
     case "hero":
@@ -104,7 +109,6 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       setCodeViewerOpen(true)
     } catch (error) {
       console.error("Error loading component code:", error)
-      // Vous pouvez ajouter ici une notification d'erreur pour l'utilisateur
     }
   }
 
@@ -156,9 +160,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                   >
                                     <div className="flex items-center flex-1">
                                       {getIconForSection(section.id)}
-                                      <span className="text-sm truncate max-w-[100px]">
-                                {section.id.charAt(0).toUpperCase() + section.id.slice(1)}
-                              </span>
+                                      <span className="text-sm truncate max-w-[100px]">{section.label}</span>
                                       <div className="flex items-center ml-auto space-x-1">
                                         {section.darkMode ? (
                                             <svg

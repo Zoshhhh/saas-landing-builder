@@ -84,15 +84,22 @@ export default function Home() {
 
     const handleAdd = useCallback(
         (sectionId: string, style: string) => {
-            if (!componentsOrder.includes(sectionId)) {
-                setSelectedStyles((prev) => ({ ...prev, [sectionId]: style }))
-                setComponentsOrder((prev) => [...prev, sectionId])
-                setSelectedSection(sectionId)
-                setEditableContent((prev) => ({ ...prev, [sectionId]: "Edit your content here" }))
-                console.log(`Added new component: ${sectionId}, style: ${style}`)
-            } else {
-                console.log(`Component ${sectionId} already exists.`)
+            const newId = `${sectionId}-${style.toLowerCase()}`
+            if (sectionId === "header" && componentsOrder.some((id) => id.startsWith("header"))) {
+                console.log("Header already exists. Cannot add another.")
+                return
             }
+            if (!componentsOrder.includes(newId)) {
+                setSelectedStyles((prev) => ({ ...prev, [newId]: style }))
+                setComponentsOrder((prev) => {
+                    if (sectionId === "header") {
+                        return [newId, ...prev]
+                    }
+                    return [...prev, newId]
+                })
+                setEditableContent((prev) => ({ ...prev, [newId]: "Edit your content here" }))
+            }
+            setIsComponentDialogOpen(false) // Ferme le dialogue après l'ajout d'un composant
         },
         [componentsOrder],
     )
@@ -102,6 +109,10 @@ export default function Home() {
     }, [])
 
     const handleDelete = useCallback((sectionId: string) => {
+        if (sectionId === "header" || sectionId === "footer") {
+            console.log(`Cannot delete ${sectionId} component.`)
+            return
+        }
         setSelectedStyles((prev) => {
             const newStyles = { ...prev }
             delete newStyles[sectionId]
@@ -117,6 +128,10 @@ export default function Home() {
     }, [])
 
     const handleMove = useCallback((sectionId: string, direction: "up" | "down") => {
+        if (sectionId.startsWith("header")) {
+            console.log("Cannot move header component.")
+            return
+        }
         setComponentsOrder((prev) => {
             const index = prev.indexOf(sectionId)
             if (index === -1) return prev
@@ -198,7 +213,13 @@ export default function Home() {
         components.forEach(({ id, variant }) => {
             newSelectedStyles[id] = variant
             newEditableContent[id] = "Edit your content here"
-            newComponentsOrder.push(id)
+            if (id === "header") {
+                newComponentsOrder.unshift(id)
+            } else if (id === "footer") {
+                newComponentsOrder.push(id)
+            } else if (!newComponentsOrder.includes(id)) {
+                newComponentsOrder.push(id)
+            }
         })
 
         setSelectedStyles(newSelectedStyles)
@@ -221,14 +242,18 @@ export default function Home() {
     }, [])
 
     const sections = componentsOrder.map((id) => {
-        const style = selectedStyles[id]
-        const componentOption = COMPONENT_OPTIONS.find((option) => option.id === id)
-        const variant = componentOption?.variants.find((v) => v.name === style)
+        const [sectionType, style] = id.split("-")
+        let label
+        if (sectionType === "divers") {
+            label = style
+        } else {
+            label = sectionType.charAt(0).toUpperCase() + sectionType.slice(1)
+        }
         return {
             id,
-            label: variant?.label || id.charAt(0).toUpperCase() + id.slice(1),
-            style,
-            darkMode: variant?.darkMode || false,
+            label,
+            style: selectedStyles[id],
+            darkMode: false,
         }
     })
 
@@ -270,6 +295,10 @@ export default function Home() {
     useEffect(() => {
         saveState()
     }, [selectedStyles, componentsOrder, editableContent, saveState])
+
+    const handleCloseComponentDialog = useCallback(() => {
+        setIsComponentDialogOpen(false)
+    }, [])
 
     return (
         <>
@@ -323,6 +352,7 @@ export default function Home() {
                                             editableContent={editableContent}
                                             onEditStart={handleEditStart}
                                             onEditEnd={handleEditEnd}
+                                            className="min-h-full"
                                         />
                                     </div>
                                 </div>
