@@ -1,11 +1,24 @@
-import React from "react"
+import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Layers, UserCircle, HelpCircle, Settings } from "lucide-react"
 import Link from "next/link"
 import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 export function AppNavbar() {
   const { isSignedIn } = useAuth()
+  const router = useRouter()
+
+  const handleDashboardClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    // Sauvegarder l'état actuel dans sessionStorage avant de naviguer
+    const currentState = localStorage.getItem("dashboardState")
+    if (currentState) {
+      sessionStorage.setItem("tempDashboardState", currentState)
+    }
+    router.push("/dashboard")
+  }
+
   return (
       <nav className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,8 +54,12 @@ export function AppNavbar() {
                 </SignInButton>
               </SignedOut>
               <SignedIn>
-                <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
-                  <Link href="/dashboard">Dashboard</Link>
+                <Button
+                    variant="ghost"
+                    className="text-gray-600 hover:text-blue-500 transition-colors"
+                    onClick={handleDashboardClick}
+                >
+                  Dashboard
                 </Button>
                 <UserButton afterSignOutUrl="/" />
               </SignedIn>

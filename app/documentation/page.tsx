@@ -20,6 +20,7 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useRouter } from "next/navigation"
 
 const chapters = [
     { id: "getting-started", title: "Getting Started" },
@@ -51,18 +52,35 @@ export default function DocumentationPage() {
         window.scrollTo({ top: 0, behavior: "smooth" })
     }
 
+    const router = useRouter()
+
+    const handleBackToDashboard = () => {
+        // Tentative de fermeture de l'onglet
+        window.close()
+
+        // Si la fermeture échoue (bloquée par le navigateur), afficher un message
+        setTimeout(() => {
+            alert(
+                "Impossible de fermer automatiquement l'onglet. Veuillez le fermer manuellement pour retourner au tableau de bord.",
+            )
+        }, 100)
+    }
+
     return (
         <SidebarProvider>
             <div className="flex h-screen">
                 <Sidebar className="w-64 border-r">
                     <SidebarHeader className="p-4 flex items-center justify-between">
                         <h2 className="text-xl font-semibold">Documentation</h2>
-                        <Link href="/dashboard">
-                            <Button variant="default" size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
-                                <ChevronLeft className="mr-2 h-4 w-4" />
-                                Back to Dashboard
-                            </Button>
-                        </Link>
+                        <Button
+                            variant="default"
+                            size="sm"
+                            className="bg-blue-500 hover:bg-blue-600 text-white"
+                            onClick={handleBackToDashboard}
+                        >
+                            <ChevronLeft className="mr-2 h-4 w-4" />
+                            Back to Dashboard
+                        </Button>
                     </SidebarHeader>
                     <div className="px-4 py-2">
                         <Input type="search" placeholder="Search documentation..." className="w-full" />

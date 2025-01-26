@@ -242,12 +242,24 @@ export default function Home() {
     }, [selectedStyles, componentsOrder, editableContent])
 
     const loadState = useCallback(() => {
-        const savedState = localStorage.getItem("dashboardState")
-        if (savedState) {
-            const state = JSON.parse(savedState)
-            setSelectedStyles(state.selectedStyles)
-            setComponentsOrder(state.componentsOrder)
-            setEditableContent(state.editableContent)
+        if (typeof window !== "undefined") {
+            const tempState = sessionStorage.getItem("tempDashboardState")
+            if (tempState) {
+                const state = JSON.parse(tempState)
+                setSelectedStyles(state.selectedStyles || {})
+                setComponentsOrder(state.componentsOrder || [])
+                setEditableContent(state.editableContent || {})
+                // Effacer l'état temporaire après l'avoir utilisé
+                sessionStorage.removeItem("tempDashboardState")
+            } else {
+                const savedState = localStorage.getItem("dashboardState")
+                if (savedState) {
+                    const state = JSON.parse(savedState)
+                    setSelectedStyles(state.selectedStyles || {})
+                    setComponentsOrder(state.componentsOrder || [])
+                    setEditableContent(state.editableContent || {})
+                }
+            }
         }
     }, [])
 
