@@ -11,9 +11,15 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Missing id or style parameter" }, { status: 400 })
     }
 
-    const filePath = path.join(process.cwd(), "components", "templates", id, `${style}.tsx`)
+    let filePath = path.join(process.cwd(), "components", "templates", id.split("-")[0], `${style}.tsx`)
+
+    // Gestion spéciale pour les composants "divers"
+    if (id.split("-")[0] === "divers") {
+        filePath = path.join(process.cwd(), "components", "templates", "divers", `${style}.tsx`)
+    }
 
     try {
+        console.log(`Attempting to read file: ${filePath}`)
         const fileContent = await fs.readFile(filePath, "utf8")
         return new NextResponse(fileContent, {
             headers: { "Content-Type": "text/plain" },
