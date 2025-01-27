@@ -9,14 +9,13 @@ import { AppNavbar } from "@/components/app/Navbar"
 import { SidebarNavigation } from "@/components/app/Sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { Download, Smartphone, Laptop, LayoutTemplate } from "lucide-react"
-import { ComponentDialog, COMPONENT_OPTIONS } from "@/components/app/ComponentDialog"
+import { ComponentDialog } from "@/components/app/ComponentDialog"
 import { TextEditor } from "@/components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { TemplateDialog } from "@/components/app/TemplateDialog"
 import { InitialChoiceDialog } from "@/components/InitialChoiceDialog"
 import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
-import { HelpCircle } from "lucide-react"
 
 interface ComponentProps {
     content?: string
@@ -56,7 +55,7 @@ const componentImports: { [key: string]: ComponentType<ComponentProps> } = {
     Venue: dynamic(() => import("@/components/templates/event/Venue")),
 }
 
-export default function Home() {
+export default function DashboardContent() {
     const [selectedStyles, setSelectedStyles] = useState<{ [key: string]: string }>({})
     const [componentsOrder, setComponentsOrder] = useState<string[]>([])
     const [selectedSection, setSelectedSection] = useState<string | null>(null)
@@ -66,21 +65,7 @@ export default function Home() {
     const [tempContent, setTempContent] = useState("")
     const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
     const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
-    const [hasInitialChoice, setHasInitialChoice] = useState<boolean | null>(null)
-    const [showStartMessage, setShowStartMessage] = useState(false)
-
-    useEffect(() => {
-        const hasVisitedDashboard = localStorage.getItem("hasVisitedDashboard")
-        if (hasVisitedDashboard === null) {
-            setHasInitialChoice(false)
-        } else {
-            setHasInitialChoice(true)
-        }
-    }, [])
-
-    useEffect(() => {
-        console.log("State update:", { selectedStyles, componentsOrder, editableContent })
-    }, [selectedStyles, componentsOrder, editableContent])
+    const [showInitialChoice, setShowInitialChoice] = useState(true)
 
     const handleAdd = useCallback(
         (sectionId: string, style: string) => {
@@ -99,7 +84,7 @@ export default function Home() {
                 })
                 setEditableContent((prev) => ({ ...prev, [newId]: "Edit your content here" }))
             }
-            setIsComponentDialogOpen(false) // Ferme le dialogue après l'ajout d'un composant
+            setIsComponentDialogOpen(false)
         },
         [componentsOrder],
     )
@@ -211,14 +196,15 @@ export default function Home() {
         const newComponentsOrder: string[] = []
 
         components.forEach(({ id, variant }) => {
-            newSelectedStyles[id] = variant
-            newEditableContent[id] = "Edit your content here"
+            const newId = `${id}-${variant.toLowerCase()}`
+            newSelectedStyles[newId] = variant
+            newEditableContent[newId] = "Edit your content here"
             if (id === "header") {
-                newComponentsOrder.unshift(id)
+                newComponentsOrder.unshift(newId)
             } else if (id === "footer") {
-                newComponentsOrder.push(id)
-            } else if (!newComponentsOrder.includes(id)) {
-                newComponentsOrder.push(id)
+                newComponentsOrder.push(newId)
+            } else {
+                newComponentsOrder.push(newId)
             }
         })
 
@@ -226,29 +212,21 @@ export default function Home() {
         setComponentsOrder(newComponentsOrder)
         setEditableContent(newEditableContent)
         setIsTemplateDialogOpen(false)
-        setHasInitialChoice(true)
+        setShowInitialChoice(false)
     }, [])
 
     const handleChooseBlank = useCallback(() => {
-        localStorage.setItem("hasVisitedDashboard", "true")
-        setHasInitialChoice(true)
-        setShowStartMessage(true)
+        setShowInitialChoice(false)
     }, [])
 
     const handleChooseTemplate = useCallback(() => {
-        localStorage.setItem("hasVisitedDashboard", "true")
-        setHasInitialChoice(true)
+        setShowInitialChoice(false)
         setIsTemplateDialogOpen(true)
     }, [])
 
     const sections = componentsOrder.map((id) => {
         const [sectionType, style] = id.split("-")
-        let label
-        if (sectionType === "divers") {
-            label = style
-        } else {
-            label = sectionType.charAt(0).toUpperCase() + sectionType.slice(1)
-        }
+        const label = sectionType === "divers" ? style : sectionType.charAt(0).toUpperCase() + sectionType.slice(1)
         return {
             id,
             label,
@@ -258,11 +236,7 @@ export default function Home() {
     })
 
     const saveState = useCallback(() => {
-        const state = {
-            selectedStyles,
-            componentsOrder,
-            editableContent,
-        }
+        const state = { selectedStyles, componentsOrder, editableContent }
         localStorage.setItem("dashboardState", JSON.stringify(state))
     }, [selectedStyles, componentsOrder, editableContent])
 
@@ -274,7 +248,6 @@ export default function Home() {
                 setSelectedStyles(state.selectedStyles || {})
                 setComponentsOrder(state.componentsOrder || [])
                 setEditableContent(state.editableContent || {})
-                // Effacer l'état temporaire après l'avoir utilisé
                 sessionStorage.removeItem("tempDashboardState")
             } else {
                 const savedState = localStorage.getItem("dashboardState")
@@ -294,11 +267,7 @@ export default function Home() {
 
     useEffect(() => {
         saveState()
-    }, [selectedStyles, componentsOrder, editableContent, saveState])
-
-    const handleCloseComponentDialog = useCallback(() => {
-        setIsComponentDialogOpen(false)
-    }, [])
+    }, [saveState, componentsOrder, editableContent, selectedStyles])
 
     return (
         <>
@@ -331,7 +300,7 @@ export default function Home() {
                                         </div>
                                         <Button onClick={() => setIsTemplateDialogOpen(true)} variant="outline" className="mr-2">
                                             <LayoutTemplate className="mr-2 h-5 w-5" /> Templates
-                                        </Button>{" "}
+                                        </Button>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button onClick={handleDownload} className="bg-blue-500 hover:bg-blue-600">
@@ -388,7 +357,7 @@ export default function Home() {
                 onOpenChange={setIsTemplateDialogOpen}
                 onSelectTemplate={handleSelectTemplate}
             />
-            {hasInitialChoice === false && (
+            {showInitialChoice && (
                 <InitialChoiceDialog
                     open={true}
                     onOpenChange={() => {}}
