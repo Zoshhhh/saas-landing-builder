@@ -7,7 +7,7 @@ export default function Hero1() {
       <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
         Discover amazing features and boost your productivity with our innovative solutions.
       </p>
-      <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+      <Button size="lg" className="bg-blue-500 hover:bg-indigo-700 text-white">
         Get Started
       </Button>
 

@@ -9,26 +9,26 @@ export default function Header2() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <span className="text-2xl font-bold text-indigo-600">Logo</span>
+            <span className="text-2xl font-bold text-blue-500">Logo</span>
             <nav className="hidden md:block">
               <ul className="flex space-x-6">
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                  <a href="#" className="text-gray-600 hover:text-blue-500 transition-colors">
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                  <a href="#" className="text-gray-600 hover:text-blue-500 transition-colors">
                     Products
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                  <a href="#" className="text-gray-600 hover:text-blue-500 transition-colors">
                     About
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">
+                  <a href="#" className="text-gray-600 hover:text-blue-500 transition-colors">
                     Contact
                   </a>
                 </li>
