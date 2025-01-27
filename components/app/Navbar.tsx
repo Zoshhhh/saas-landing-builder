@@ -59,13 +59,6 @@ export function AppNavbar() {
                 </SignInButton>
               </SignedOut>
               <SignedIn>
-                <Button
-                    variant="ghost"
-                    className="text-gray-600 hover:text-blue-500 transition-colors"
-                    onClick={handleDashboardClick}
-                >
-                  Dashboard
-                </Button>
                 <UserButton afterSignOutUrl="/" />
               </SignedIn>
             </div>
