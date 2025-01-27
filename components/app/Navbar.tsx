@@ -41,9 +41,14 @@ export function AppNavbar() {
                   Documentation
                 </a>
               </Button>
-              <Button variant="ghost" className="text-gray-600 hover:text-blue-500 transition-colors">
-                <Settings className="mr-2 h-5 w-5" />
-                Support
+              <Button variant="ghost" asChild>
+                <a
+                    href="https://discord.gg/AghFzcHnYn"
+                    className="text-gray-600 hover:text-blue-500 transition-colors"
+                >
+                  <Settings className="mr-2 h-5 w-5" />
+                  Support
+                </a>
               </Button>
               <SignedOut>
                 <SignInButton mode="modal">
