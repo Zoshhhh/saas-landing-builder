@@ -117,7 +117,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         <div className="h-full flex flex-col w-full">
           <div className="border-b border-r px-2 py-2 pt-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold">Components</span>
+              <span className="px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">Components</span>
               <div className="flex items-center ml-auto space-x-1">
                 <Button
                     variant="ghost"

@@ -30,21 +30,21 @@ export function AppNavbar() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" asChild className="text-gray-600 hover:text-blue-500 transition-colors">
+              <Button variant="ghost" asChild className="px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
                 <Link href="/" prefetch={false}>
                   Home
                 </Link>
               </Button>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" asChild className="px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
                 <a href="/documentation" target="_blank" rel="noopener noreferrer" className="flex items-center">
                   <HelpCircle className="mr-2 h-5 w-5" />
                   Documentation
                 </a>
               </Button>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" asChild className="px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
                 <a
                     href="https://discord.gg/AghFzcHnYn"
-                    className="text-gray-600 hover:text-blue-500 transition-colors"
+                    className="text-blue-500 hover:text-gray-600 transition-colors"
                 >
                   <Settings className="mr-2 h-5 w-5" />
                   Support
