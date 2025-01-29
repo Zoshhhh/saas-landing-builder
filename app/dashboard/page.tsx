@@ -71,6 +71,12 @@ export default function DashboardContent() {
     const [showInitialChoice, setShowInitialChoice] = useState(true)
     const [isAIRequestDialogOpen, setIsAIRequestDialogOpen] = useState(false)
 
+    useEffect(() => {
+        console.log("Current components order:", componentsOrder)
+        console.log("Current selected styles:", selectedStyles)
+        console.log("Current editable content:", editableContent)
+    }, [componentsOrder, selectedStyles, editableContent])
+
     const handleAdd = useCallback(
         (sectionId: string, style: string) => {
             const newId = `${sectionId}-${style.toLowerCase()}`
@@ -79,7 +85,6 @@ export default function DashboardContent() {
                 return
             }
             if (!componentsOrder.includes(newId)) {
-                // Check if the component exists in the componentImports
                 if (componentImports[style]) {
                     setSelectedStyles((prev) => ({ ...prev, [newId]: style }))
                     setComponentsOrder((prev) => {
@@ -91,12 +96,11 @@ export default function DashboardContent() {
                     setEditableContent((prev) => ({ ...prev, [newId]: "Edit your content here" }))
                 } else {
                     console.error(`Component ${style} does not exist in componentImports`)
-                    // Optionally, show an error message to the user
                 }
             }
             setIsComponentDialogOpen(false)
         },
-        [componentsOrder, componentImports],
+        [componentsOrder],
     )
 
     const handleSelect = useCallback((sectionId: string) => {
@@ -235,26 +239,43 @@ export default function DashboardContent() {
         setIsTemplateDialogOpen(true)
     }, [])
 
-    const handleAIRequest = async (request: string) => {
+    const handleAIRequest = async (generatedComponents: any[]) => {
         try {
-            const response = await fetch("/api/generate-ai-landing-page", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ request }),
+            console.log("Received AI-generated components:", generatedComponents)
+
+            const newSelectedStyles: { [key: string]: string } = { ...selectedStyles }
+            const newEditableContent: { [key: string]: string } = { ...editableContent }
+            const newComponentsOrder: string[] = [...componentsOrder]
+
+            generatedComponents.forEach((component) => {
+                const newId = `${component.id}-${component.variant.toLowerCase()}`
+
+                if (!newComponentsOrder.includes(newId)) {
+                    if (component.id === "header") {
+                        newComponentsOrder.unshift(newId)
+                    } else if (component.id === "footer") {
+                        newComponentsOrder.push(newId)
+                    } else {
+                        newComponentsOrder.push(newId)
+                    }
+                }
+
+                newSelectedStyles[newId] = component.variant
+                newEditableContent[newId] = component.content
             })
 
-            if (!response.ok) {
-                throw new Error("Failed to generate AI landing page")
-            }
+            console.log("Updated components order:", newComponentsOrder)
+            console.log("Updated selected styles:", newSelectedStyles)
+            console.log("Updated editable content:", newEditableContent)
 
-            const data = await response.json()
-            handleSelectTemplate(data.components)
+            setSelectedStyles(newSelectedStyles)
+            setComponentsOrder(newComponentsOrder)
+            setEditableContent(newEditableContent)
+
+            // Force a re-render
             setIsAIRequestDialogOpen(false)
         } catch (error) {
-            console.error("Error generating AI landing page:", error)
-            // Handle error (e.g., show an error message to the user)
+            console.error("Error processing AI generated components:", error)
         }
     }
 
@@ -301,7 +322,15 @@ export default function DashboardContent() {
 
     useEffect(() => {
         saveState()
-    }, [saveState, componentsOrder, editableContent, selectedStyles])
+    }, [saveState, componentsOrder, editableContent, selectedStyles]) //Corrected useEffect dependency
+
+    useEffect(() => {
+        console.log("Rendering Preview with:", {
+            selectedStyles,
+            componentsOrder,
+            editableContent,
+        })
+    }, [selectedStyles, componentsOrder, editableContent])
 
     return (
         <>
@@ -416,6 +445,11 @@ export default function DashboardContent() {
                 open={isAIRequestDialogOpen}
                 onOpenChange={setIsAIRequestDialogOpen}
                 onSubmit={handleAIRequest}
+                existingComponents={sections.map((section) => ({
+                    id: section.id,
+                    label: section.label,
+                    content: editableContent[section.id],
+                }))}
             />
         </>
     )

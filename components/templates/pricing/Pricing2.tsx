@@ -1,4 +1,7 @@
+"use client"
+
 import type React from "react"
+import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 
 interface Feature {
@@ -15,8 +18,19 @@ interface Plan {
   features: string[]
 }
 
-const Pricing2: React.FC = () => {
-  const plan: Plan = {
+type Pricing2Props = {
+  content?: string
+}
+
+const Pricing2: React.FC<Pricing2Props> = ({ content }) => {
+  useEffect(() => {
+    console.log("Pricing2 content:", content)
+  }, [content])
+
+  let title = "Pay as you grow"
+  let subtitle = "Pricing"
+  let description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur consequat nunc."
+  let plan: Plan = {
     name: "Basic plan",
     desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     price: 32,
@@ -33,7 +47,7 @@ const Pricing2: React.FC = () => {
     ],
   }
 
-  const features: Feature[] = [
+  let features: Feature[] = [
     {
       name: "Scalable",
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text",
@@ -116,14 +130,52 @@ const Pricing2: React.FC = () => {
     },
   ]
 
+  if (content) {
+    try {
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(content, "text/html")
+
+      const titleElement = doc.querySelector("h2")
+      if (titleElement) title = titleElement.textContent || title
+
+      const subtitleElement = doc.querySelector("h3")
+      if (subtitleElement) subtitle = subtitleElement.textContent || subtitle
+
+      const descriptionElement = doc.querySelector("p")
+      if (descriptionElement) description = descriptionElement.textContent || description
+
+      const planElement = doc.querySelector(".plan")
+      if (planElement) {
+        plan = {
+          name: planElement.querySelector("h4")?.textContent || plan.name,
+          desc: planElement.querySelector("p")?.textContent || plan.desc,
+          price: Number.parseFloat(planElement.querySelector(".price")?.textContent || "") || plan.price,
+          isMostPop: planElement.classList.contains("most-popular"),
+          features: Array.from(planElement.querySelectorAll("li")).map((li) => li.textContent || ""),
+        }
+      }
+
+      const featureElements = doc.querySelectorAll(".feature")
+      if (featureElements.length > 0) {
+        features = Array.from(featureElements).map((featureElement) => ({
+          name: featureElement.querySelector("h4")?.textContent || "",
+          desc: featureElement.querySelector("p")?.textContent || "",
+          icon: featureElement.querySelector("svg")?.outerHTML || "",
+        }))
+      }
+    } catch (error) {
+      console.error("Error parsing content:", error)
+    }
+  }
+
   return (
       <section className="relative py-14">
         <div className="max-w-screen-xl mx-auto text-gray-600 md:px-8">
           <div className="relative max-w-xl space-y-3 px-4 md:px-0">
-            <h3 className="text-blue-600 font-semibold">Pricing</h3>
-            <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">Pay as you grow</p>
+            <h3 className="text-blue-600 font-semibold">{subtitle}</h3>
+            <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">{title}</p>
             <div className="max-w-xl">
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur consequat nunc.</p>
+              <p>{description}</p>
             </div>
           </div>
           <div className="mt-16 justify-between gap-8 md:flex">
@@ -131,7 +183,7 @@ const Pricing2: React.FC = () => {
               {features.map((item, idx) => (
                   <li key={idx} className="flex gap-x-3">
                     <div className="flex-none w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                      {item.icon}
+                      {typeof item.icon === "string" ? <div dangerouslySetInnerHTML={{ __html: item.icon }} /> : item.icon}
                     </div>
                     <div>
                       <h4 className="text-lg text-gray-800 font-medium">{item.name}</h4>

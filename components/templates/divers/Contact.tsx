@@ -1,7 +1,46 @@
-import React from "react"
+"use client"
 
-export default () => {
-    const contactMethods = [
+import type React from "react"
+import { useEffect } from "react"
+import { createElement } from "react"
+
+type ContactProps = {
+    content?: string
+}
+
+export default function Contact({ content }: ContactProps) {
+    useEffect(() => {
+        console.log("Contact content:", content)
+    }, [content])
+
+    const svgToReact = (svgString: string): React.ReactElement | null => {
+        const div = document.createElement("div")
+        div.innerHTML = svgString.trim()
+        const svg = div.firstChild as SVGElement
+        if (svg) {
+            return createElement("svg", {
+                ...Array.from(svg.attributes).reduce(
+                    (acc, attr) => ({
+                        ...acc,
+                        [attr.name]: attr.value,
+                    }),
+                    {},
+                ),
+                dangerouslySetInnerHTML: { __html: svg.innerHTML },
+            })
+        }
+        return null
+    }
+
+    let contactMethods: {
+        icon: string | React.ReactElement
+        title: string
+        desc: string
+        link: {
+            name: string
+            href: string
+        }
+    }[] = [
         {
             icon: (
                 <svg
@@ -51,14 +90,43 @@ export default () => {
         },
     ]
 
+    let title = "Let's connect"
+    let description = "We're here to help and answer any question you might have, We look forward to hearing from you."
+
+    if (content) {
+        try {
+            const parser = new DOMParser()
+            const doc = parser.parseFromString(content, "text/html")
+
+            const titleElement = doc.querySelector("h3")
+            if (titleElement) title = titleElement.textContent || title
+
+            const descriptionElement = doc.querySelector("p")
+            if (descriptionElement) description = descriptionElement.textContent || description
+
+            const contactMethodElements = doc.querySelectorAll("li")
+            if (contactMethodElements.length > 0) {
+                contactMethods = Array.from(contactMethodElements).map((element) => ({
+                    icon: element.querySelector("svg")?.outerHTML || "",
+                    title: element.querySelector("h4")?.textContent || "",
+                    desc: element.querySelector("p")?.textContent || "",
+                    link: {
+                        name: element.querySelector("a")?.textContent || "",
+                        href: element.querySelector("a")?.getAttribute("href") || "javascript:void(0)",
+                    },
+                }))
+            }
+        } catch (error) {
+            console.error("Error parsing content:", error)
+        }
+    }
+
     return (
         <section className="py-14">
             <div className="max-w-screen-xl mx-auto px-4 text-blue-600 gap-12 md:px-8 lg:flex">
                 <div className="max-w-md">
-                    <h3 className="text-blue-800 text-3xl font-semibold sm:text-4xl">Let's connect</h3>
-                    <p className="mt-3">
-                        We're here to help and answer any question you might have, We look forward to hearing from you.
-                    </p>
+                    <h3 className="text-blue-800 text-3xl font-semibold sm:text-4xl">{title}</h3>
+                    <p className="mt-3">{description}</p>
                 </div>
                 <div>
                     <ul className="mt-12 gap-y-6 gap-x-12 items-center md:flex lg:gap-x-0 lg:mt-0">
@@ -68,7 +136,7 @@ export default () => {
                                 className="space-y-3 border-t py-6 md:max-w-sm md:py-0 md:border-t-0 lg:border-l lg:px-12 lg:max-w-none"
                             >
                                 <div className="w-12 h-12 rounded-full border flex items-center justify-center text-blue-700">
-                                    {item.icon}
+                                    {typeof item.icon === "string" ? svgToReact(item.icon) : item.icon}
                                 </div>
                                 <h4 className="text-blue-800 text-lg font-medium xl:text-xl">{item.title}</h4>
                                 <p>{item.desc}</p>

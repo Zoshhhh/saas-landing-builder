@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -40,8 +40,17 @@ const Testimonial: React.FC<TestimonialProps> = ({ content, author, role, avatar
     </Card>
 )
 
-export default function Testimonials2() {
-    const testimonials = [
+type Testimonials2Props = {
+    content?: string
+}
+
+export default function Testimonials2({ content }: Testimonials2Props) {
+    useEffect(() => {
+        console.log("Testimonials2 content:", content)
+    }, [content])
+
+    let title = "What Our Clients Say"
+    let testimonials = [
         {
             content: "This product has completely transformed the way we work. It's a real game-changer!",
             author: "Sarah Johnson",
@@ -74,6 +83,28 @@ export default function Testimonials2() {
         },
     ]
 
+    if (content) {
+        try {
+            const parser = new DOMParser()
+            const doc = parser.parseFromString(content, "text/html")
+
+            const titleElement = doc.querySelector("h2")
+            if (titleElement) title = titleElement.textContent || title
+
+            const testimonialElements = doc.querySelectorAll(".testimonial")
+            if (testimonialElements.length > 0) {
+                testimonials = Array.from(testimonialElements).map((element) => ({
+                    content: element.querySelector("p")?.textContent || "",
+                    author: element.querySelector(".author")?.textContent || "",
+                    role: element.querySelector(".role")?.textContent || "",
+                    avatarSrc: element.querySelector("img")?.getAttribute("src") || "/placeholder.svg?height=40&width=40",
+                }))
+            }
+        } catch (error) {
+            console.error("Error parsing content:", error)
+        }
+    }
+
     const [currentIndex, setCurrentIndex] = useState(0)
 
     const nextTestimonial = () => {
@@ -87,7 +118,7 @@ export default function Testimonials2() {
     return (
         <section className="py-12 bg-gray-50">
             <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center mb-8">What Our Clients Say</h2>
+                <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
                 <div className="relative max-w-3xl mx-auto">
                     <Testimonial {...testimonials[currentIndex]} />
                     <div className="absolute top-1/2 -translate-y-1/2 left-0 -ml-4">

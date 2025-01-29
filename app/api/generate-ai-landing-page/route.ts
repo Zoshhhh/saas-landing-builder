@@ -5,82 +5,73 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
 
-const availableComponents = [
-    "Header1",
-    "Header2",
-    "Hero1",
-    "Hero2",
-    "Footer1",
-    "Footer2",
-    "FAQ1",
-    "FAQ2",
-    "Pricing1",
-    "Pricing2",
-    "Pricing3",
-    "Testimonials1",
-    "Testimonials2",
-    "ImageGallery1",
-    "ImageGallery2",
-    "Text1",
-    "Text2",
-    "Features",
-    "CTA",
-    "Services",
-    "Contact",
-    "About",
-    "FeaturedPosts",
-    "PostGrid",
-    "Newsletter",
-]
-
 export async function POST(req: Request) {
     try {
-        const { request } = await req.json()
+        const { request, existingComponents } = await req.json()
+
+        const prompt = `
+      You are a landing page content generator and component selector. The user's request is: "${request}"
+      
+      Based on this request, you need to:
+      1. Select appropriate components for a landing page. Choose from: Header, Hero, Features, Pricing, Testimonials, FAQ, CTA, Footer.
+      2. For each selected component, generate suitable content.
+      
+      If there are existing components, update their content. If not, create new ones.
+      
+      Respond with a JSON array where each object contains:
+      - id: the component type (e.g., "header", "hero", etc.)
+      - variant: the variant of the component (e.g., "Header1", "Hero2", etc.)
+      - content: the generated content for that component
+      
+      Ensure the content is engaging, professional, and relevant to the user's request.
+      Include appropriate HTML tags in the content for formatting.
+    `
 
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
                 {
                     role: "system",
-                    content: `You are an AI assistant that helps create landing pages. Based on the user's request, suggest appropriate components for a landing page. Here are the available components with their descriptions:
-
-- Header1, Header2: Navigation components for the top of the page, typically containing logo, menu items, and sometimes a call-to-action button.
-- Hero1, Hero2: Large, eye-catching introductory sections at the top of the page, often with a headline, subtext, and a main call-to-action.
-- Footer1, Footer2: Bottom page components with links, social media icons, and additional information about the company or website.
-- FAQ1, FAQ2: Sections for Frequently Asked Questions, helping to address common user queries and concerns.
-- Pricing1, Pricing2, Pricing3: Various layouts for displaying product or service pricing options, features, and plans.
-- Testimonials1, Testimonials2: Sections showcasing customer reviews, feedback, or success stories to build trust and credibility.
-- ImageGallery1, ImageGallery2: Components for displaying multiple images, useful for showcasing products, portfolio items, or visual content.
-- Text1, Text2: Flexible text content sections for detailed information, explanations, or storytelling.
-- Features: Sections highlighting key features, benefits, or unique selling points of a product or service.
-- CTA (Call-to-Action): Prominent buttons or sections designed to encourage user action, such as signing up or making a purchase.
-- Services: Components for showcasing and explaining the services offered by a company or individual.
-- Contact: Forms or information sections for users to get in touch or find contact details.
-- About: Sections providing information about the company, team, or individual behind the website.
-- FeaturedPosts: Components displaying highlighted or recent blog posts, articles, or news items.
-- PostGrid: Grid layouts for showcasing multiple blog posts or content pieces, typically with images and short descriptions.
-- Newsletter: Email signup forms for users to subscribe to newsletters or updates.
-
-Respond with a comma-separated list of 4-7 most appropriate components based on the user's request, considering the purpose and content needs of the landing page.`,
+                    content: prompt,
                 },
-                { role: "user", content: request },
             ],
+            temperature: 0.7,
+            max_tokens: 1500,
         })
 
-        // Filter and process the suggested components
-        const suggestedComponents = completion.choices[0].message.content
-            ?.split(",")
-            .map((component) => component.trim())
-            .filter((component) => availableComponents.includes(component))
-            .map((component) => {
-                const [id, variant] = component.split(/(\d+)/)
-                return { id: id.toLowerCase(), variant: component }
-            })
+        console.log("Raw AI response:", completion.choices[0].message.content)
 
-        return NextResponse.json({ components: suggestedComponents })
+        let cleanedContent = completion.choices[0].message.content?.trim() || "[]"
+        cleanedContent = cleanedContent.replace(/^```json\s*/, "").replace(/\s*```$/, "")
+
+        console.log("Cleaned content:", cleanedContent)
+
+        let generatedComponents
+        try {
+            generatedComponents = JSON.parse(cleanedContent)
+        } catch (parseError) {
+            console.error("JSON parse error:", parseError)
+            console.log("Content that failed to parse:", cleanedContent)
+
+            // Attempt to fix common JSON issues
+            cleanedContent = cleanedContent.replace(/'/g, '"').replace(/\n/g, "")
+            try {
+                generatedComponents = JSON.parse(cleanedContent)
+            } catch (secondParseError) {
+                console.error("Second JSON parse attempt failed:", secondParseError)
+                return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 })
+            }
+        }
+
+        if (!Array.isArray(generatedComponents)) {
+            console.error("Parsed content is not an array:", generatedComponents)
+            return NextResponse.json({ error: "Invalid AI response format" }, { status: 500 })
+        }
+
+        return NextResponse.json({ components: generatedComponents })
     } catch (error) {
-        console.error("Error generating AI landing page:", error)
-        return NextResponse.json({ error: "Failed to generate AI landing page" }, { status: 500 })
+        console.error("Error generating content:", error)
+        return NextResponse.json({ error: "Failed to generate content" }, { status: 500 })
     }
 }
 

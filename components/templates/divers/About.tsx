@@ -1,23 +1,24 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-export default function About() {
+export default function Newsletter() {
     return (
-        <section className="py-16 bg-white">
+        <section className="py-12 bg-gray-100">
             <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center">
-                    <div className="md:w-1/2 mb-8 md:mb-0">
-                        <h2 className="text-3xl font-bold mb-4">About Us</h2>
-                        <p className="text-gray-600 mb-6">
-                            We are a passionate team dedicated to creating innovative solutions for businesses of all sizes. With
-                            years of experience and a commitment to excellence, we strive to deliver the best products and services to
-                            our clients.
-                        </p>
-                        <Button>Learn More</Button>
-                    </div>
-                    <div className="md:w-1/2 md:pl-8">
-                        <div className="aspect-video bg-gray-200 rounded-lg"></div>
-                    </div>
+                <div className="max-w-2xl mx-auto text-center">
+                    <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+                    <p className="text-gray-600 mb-6">
+                        Stay up to date with our latest articles, tips, and insights. We promise not to spam you!
+                    </p>
+                    <form className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="w-full sm:w-auto sm:flex-1 max-w-xs">
+                            <Input type="email" placeholder="Enter your email address" className="w-full" />
+                        </div>
+                        <Button type="submit" className="w-full sm:w-auto">
+                            Subscribe
+                        </Button>
+                    </form>
                 </div>
             </div>
         </section>

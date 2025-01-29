@@ -1,9 +1,24 @@
+"use client"
+
+import React, { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
-export default function Footer2() {
-  const footerNavs = [
+type Footer2Props = {
+  content?: string
+}
+
+export default function Footer2({ content }: Footer2Props) {
+  useEffect(() => {
+    console.log("Footer2 content:", content)
+  }, [content])
+
+  let newsletterTitle = "Get our beautiful newsletter straight to your inbox."
+  let emailPlaceholder = "Enter your email"
+  let subscribeButtonText = "Subscribe"
+  let copyrightText = `© ${new Date().getFullYear()} Your Company Name. All rights reserved.`
+  let footerNavs = [
     {
       label: "Resources",
       items: [
@@ -41,12 +56,45 @@ export default function Footer2() {
     },
   ]
 
+  if (content) {
+    try {
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(content, "text/html")
+
+      const titleElement = doc.querySelector("h3")
+      if (titleElement) newsletterTitle = titleElement.textContent || newsletterTitle
+
+      const inputElement = doc.querySelector("input[type='email']")
+      if (inputElement) emailPlaceholder = inputElement.getAttribute("placeholder") || emailPlaceholder
+
+      const buttonElement = doc.querySelector("button[type='submit']")
+      if (buttonElement) subscribeButtonText = buttonElement.textContent || subscribeButtonText
+
+      const copyrightElement = doc.querySelector("p")
+      if (copyrightElement) copyrightText = copyrightElement.textContent || copyrightText
+
+      const navSections = doc.querySelectorAll("ul")
+      if (navSections.length > 0) {
+        footerNavs = Array.from(navSections).map((section) => {
+          const label = section.querySelector("h4")?.textContent || ""
+          const items = Array.from(section.querySelectorAll("li a")).map((link) => ({
+            href: link.getAttribute("href") || "#",
+            name: link.textContent || "",
+          }))
+          return { label, items }
+        })
+      }
+    } catch (error) {
+      console.error("Error parsing content:", error)
+    }
+  }
+
   return (
       <footer className="pt-10 bg-blue-50">
         <div className="max-w-screen-xl mx-auto px-4 md:px-8">
           <div className="justify-between items-center gap-12 md:flex">
             <div className="flex-1 max-w-lg">
-              <h3 className="text-2xl font-bold text-blue-950">Get our beautiful newsletter straight to your inbox.</h3>
+              <h3 className="text-2xl font-bold text-blue-950">{newsletterTitle}</h3>
             </div>
             <div className="flex-1 mt-6 md:mt-0">
               <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-x-3 md:justify-end">
@@ -68,7 +116,7 @@ export default function Footer2() {
                   <Input
                       type="email"
                       required
-                      placeholder="Enter your email"
+                      placeholder={emailPlaceholder}
                       className="w-full pl-12 pr-3 py-2 text-gray-500 bg-white outline-none border focus:border-blue-600 shadow-sm rounded-lg"
                   />
                 </div>
@@ -76,7 +124,7 @@ export default function Footer2() {
                     type="submit"
                     className="block w-auto py-3 px-4 font-medium text-sm text-center text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 active:shadow-none rounded-lg shadow"
                 >
-                  Subscribe
+                  {subscribeButtonText}
                 </Button>
               </form>
             </div>
@@ -96,7 +144,7 @@ export default function Footer2() {
             ))}
           </div>
           <div className="mt-10 py-10 border-t border-gray-300 items-center justify-between sm:flex">
-            <p className="text-gray-600">© {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+            <p className="text-gray-600">{copyrightText}</p>
             <div className="flex items-center gap-x-6 text-gray-400 mt-6">
               <a href="#" className="hover:text-blue-600 duration-150">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
