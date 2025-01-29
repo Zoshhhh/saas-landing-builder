@@ -21,7 +21,7 @@ export function Hero() {
                           <div className="flex justify-center items-center gap-4">
                             <div className="inline-block">
                     <span className=" px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
-                        high performance
+                                        Page Builder
                     </span>
                             </div>
                             <span className="inline-block text-6xl">⚡</span>
