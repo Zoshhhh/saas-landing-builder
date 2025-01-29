@@ -16,6 +16,8 @@ import { TemplateDialog } from "@/components/app/TemplateDialog"
 import { InitialChoiceDialog } from "@/components/InitialChoiceDialog"
 import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
+import { AIRequestDialog } from "@/components/AIRequestDialog"
+import { Sparkles } from "lucide-react"
 
 interface ComponentProps {
     content?: string
@@ -66,6 +68,7 @@ export default function DashboardContent() {
     const [isComponentDialogOpen, setIsComponentDialogOpen] = useState(false)
     const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
     const [showInitialChoice, setShowInitialChoice] = useState(true)
+    const [isAIRequestDialogOpen, setIsAIRequestDialogOpen] = useState(false)
 
     const handleAdd = useCallback(
         (sectionId: string, style: string) => {
@@ -75,18 +78,24 @@ export default function DashboardContent() {
                 return
             }
             if (!componentsOrder.includes(newId)) {
-                setSelectedStyles((prev) => ({ ...prev, [newId]: style }))
-                setComponentsOrder((prev) => {
-                    if (sectionId === "header") {
-                        return [newId, ...prev]
-                    }
-                    return [...prev, newId]
-                })
-                setEditableContent((prev) => ({ ...prev, [newId]: "Edit your content here" }))
+                // Check if the component exists in the componentImports
+                if (componentImports[style]) {
+                    setSelectedStyles((prev) => ({ ...prev, [newId]: style }))
+                    setComponentsOrder((prev) => {
+                        if (sectionId === "header") {
+                            return [newId, ...prev]
+                        }
+                        return [...prev, newId]
+                    })
+                    setEditableContent((prev) => ({ ...prev, [newId]: "Edit your content here" }))
+                } else {
+                    console.error(`Component ${style} does not exist in componentImports`)
+                    // Optionally, show an error message to the user
+                }
             }
             setIsComponentDialogOpen(false)
         },
-        [componentsOrder],
+        [componentsOrder, componentImports],
     )
 
     const handleSelect = useCallback((sectionId: string) => {
@@ -217,12 +226,36 @@ export default function DashboardContent() {
 
     const handleChooseBlank = useCallback(() => {
         setShowInitialChoice(false)
+        // Ajoutez ici la logique pour commencer avec une page vierge si nécessaire
     }, [])
 
     const handleChooseTemplate = useCallback(() => {
         setShowInitialChoice(false)
         setIsTemplateDialogOpen(true)
     }, [])
+
+    const handleAIRequest = async (request: string) => {
+        try {
+            const response = await fetch("/api/generate-ai-landing-page", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ request }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to generate AI landing page")
+            }
+
+            const data = await response.json()
+            handleSelectTemplate(data.components)
+            setIsAIRequestDialogOpen(false)
+        } catch (error) {
+            console.error("Error generating AI landing page:", error)
+            // Handle error (e.g., show an error message to the user)
+        }
+    }
 
     const sections = componentsOrder.map((id) => {
         const [sectionType, style] = id.split("-")
@@ -301,6 +334,9 @@ export default function DashboardContent() {
                                         <Button onClick={() => setIsTemplateDialogOpen(true)} variant="outline" className="mr-2">
                                             <LayoutTemplate className="mr-2 h-5 w-5" /> Templates
                                         </Button>
+                                        <Button onClick={() => setIsAIRequestDialogOpen(true)} variant="outline" className="mr-2">
+                                            <Sparkles className="mr-2 h-5 w-5" /> Ask AI
+                                        </Button>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button onClick={handleDownload} className="bg-blue-500 hover:bg-blue-600">
@@ -359,13 +395,18 @@ export default function DashboardContent() {
             />
             {showInitialChoice && (
                 <InitialChoiceDialog
-                    open={true}
-                    onOpenChange={() => {}}
+                    open={showInitialChoice}
+                    onOpenChange={setShowInitialChoice}
                     onChooseBlank={handleChooseBlank}
                     onChooseTemplate={handleChooseTemplate}
+                    onClose={() => setShowInitialChoice(false)}
                 />
             )}
+            <AIRequestDialog
+                open={isAIRequestDialogOpen}
+                onOpenChange={setIsAIRequestDialogOpen}
+                onSubmit={handleAIRequest}
+            />
         </>
     )
 }
-

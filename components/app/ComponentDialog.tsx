@@ -11,9 +11,6 @@ import {
   FootprintsIcon,
   MessageSquare,
   Image,
-  Zap,
-  PhoneCall,
-  Info,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -52,13 +49,13 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     ],
   },
   {
-    id: "gallery",
-    label: "Image Gallery",
-    icon: <Image className="h-5 w-5" />,
-    color: "bg-green-100",
+    id: "footer",
+    label: "Footer",
+    icon: <FootprintsIcon className="h-5 w-5" />,
+    color: "bg-red-100",
     variants: [
-      { name: "ImageGallery1", label: "Featured Image", darkMode: false },
-      { name: "ImageGallery2", label: "Grid with Lightbox", darkMode: false },
+      { name: "Footer1", label: "Simple", darkMode: true },
+      { name: "Footer2", label: "With Links", darkMode: false },
     ],
   },
   {
@@ -93,13 +90,13 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     ],
   },
   {
-    id: "footer",
-    label: "Footer",
-    icon: <FootprintsIcon className="h-5 w-5" />,
-    color: "bg-red-100",
+    id: "gallery",
+    label: "Image Gallery",
+    icon: <Image className="h-5 w-5" />,
+    color: "bg-green-100",
     variants: [
-      { name: "Footer1", label: "Simple", darkMode: true },
-      { name: "Footer2", label: "With Links", darkMode: false },
+      { name: "ImageGallery1", label: "Featured Image", darkMode: false },
+      { name: "ImageGallery2", label: "Grid with Lightbox", darkMode: false },
     ],
   },
   {

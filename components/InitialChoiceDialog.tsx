@@ -2,21 +2,33 @@ import React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { LayoutTemplate, FileText, ArrowRight } from "lucide-react"
+import { LayoutTemplate, FileText, ArrowRight, X } from "lucide-react"
 
 interface InitialChoiceDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     onChooseBlank: () => void
     onChooseTemplate: () => void
+    onClose: () => void
 }
 
-export function InitialChoiceDialog({ open, onOpenChange, onChooseBlank, onChooseTemplate }: InitialChoiceDialogProps) {
+export function InitialChoiceDialog({
+                                        open,
+                                        onOpenChange,
+                                        onChooseBlank,
+                                        onChooseTemplate,
+                                        onClose,
+                                    }: InitialChoiceDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[700px]">
+            <DialogContent className="sm:max-w-[700px]" onInteractOutside={onClose} onEscapeKeyDown={onClose}>
                 <DialogHeader>
-                    <DialogTitle className="text-2xl">Welcome to Landing Page Generator</DialogTitle>
+                    <div className="flex justify-between items-center">
+                        <DialogTitle className="text-2xl">Welcome to Landing Page Generator</DialogTitle>
+                        <Button variant="ghost" size="icon" onClick={onClose}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
                     <DialogDescription>Choose how you'd like to start building your landing page</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-6 pt-4">
