@@ -1,16 +1,17 @@
+import { NextResponse } from "next/server"
+import archiver from "archiver"
+import fs from "fs"
+import path from "path"
+
 interface RequestBody {
   selectedStyles: { [key: string]: string }
   componentsOrder: string[]
   editableContent: { [key: string]: string }
 }
 
-import { NextResponse } from "next/server"
-import archiver from "archiver"
-import fs from "fs"
-import path from "path"
-
 export async function POST(req: Request) {
   const { selectedStyles, componentsOrder, editableContent }: RequestBody = await req.json()
+  console.log("Received data for export:", { selectedStyles, componentsOrder, editableContent })
 
   const archive: archiver.Archiver = archiver("zip", {
     zlib: { level: 9 },
@@ -97,29 +98,57 @@ export default function Home() {
         const content = editableContent[section] || ""
 
         let componentContent = fs.readFileSync(templatePath, "utf-8")
+        // Remove any existing content assignment
+        componentContent = componentContent.replace(/const content = .*?;(\r?\n|\r)/s, "")
+        // Add the new content
         componentContent = componentContent.replace(
             "export default function",
-            `const content = ${JSON.stringify(content)}
+            `const content = ${JSON.stringify(content)};
 
 export default function`,
         )
+        // Update how content is used in the component
         componentContent = componentContent.replace(
-            /<section/,
-            "<section dangerouslySetInnerHTML={{ __html: content }} ",
+            /<([^>]+)>(\s*{content}\s*)<\/([^>]+)>/,
+            "<$1 dangerouslySetInnerHTML={{ __html: content }} />",
         )
 
-        archive.append(componentContent, { name: `project/components/${section}.tsx` })
+        const fileName = `${style.toLowerCase()}.tsx`
+        archive.append(componentContent, { name: `project/components/${section}/${fileName}` })
       } else {
         console.warn(`Component file not found: ${templatePath}`)
-        // Add a placeholder component if the file is not found
+        // Add a placeholder component with different text styles if the file is not found
         const placeholderContent = `
 import React from 'react';
 
 export default function ${style}() {
   return (
-    <div style={{ padding: '20px', background: '#f0f0f0', margin: '10px 0' }}>
-      <h2>${style} Component</h2>
-      <p>This is a placeholder for the ${style} component.</p>
+    <div className="p-8 space-y-8">
+      <h2 className="text-3xl font-bold">${style} Component</h2>
+      
+      {/* Short line of text */}
+      <p className="text-sm">This is a short line of text.</p>
+      
+      {/* Centered paragraph */}
+      <p className="text-center max-w-2xl mx-auto">
+        This is a centered paragraph. It has a maximum width and is aligned in the center of its container.
+        The text wraps to multiple lines if it exceeds the maximum width.
+      </p>
+      
+      {/* Left-aligned paragraph */}
+      <p className="text-left">
+        This is a left-aligned paragraph. It starts from the left side of its container and continues
+        to the right. This is the default alignment for most text on web pages. It's easy to read
+        and follows the natural reading direction in many languages.
+      </p>
+      
+      {/* Additional text styles */}
+      <div className="space-y-4">
+        <p className="font-bold">This is bold text.</p>
+        <p className="italic">This text is italicized.</p>
+        <p className="underline">This text has an underline.</p>
+        <p className="text-xl">This text is larger than the default size.</p>
+      </div>
     </div>
   );
 }
