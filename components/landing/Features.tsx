@@ -10,7 +10,7 @@ export function Features() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6"
+                    className="w-8 h-8"
                 >
                     <path
                         strokeLinecap="round"
@@ -34,7 +34,7 @@ export function Features() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6"
+                    className="w-8 h-8"
                 >
                     <path
                         strokeLinecap="round"
@@ -55,7 +55,7 @@ export function Features() {
     return (
         <section className="py-14">
             <div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-16 justify-between md:px-8 lg:flex">
-                <div>
+                <div className="lg:w-1/2">
                     <div className="max-w-xl space-y-3">
                         <h3 className="text-blue-500 font-semibold">Features</h3>
                         <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">AI-Powered Landing Page Generation</p>
@@ -68,7 +68,7 @@ export function Features() {
                         <ul className="space-y-8">
                             {features.map((item, idx) => (
                                 <li key={idx} className="flex gap-x-4">
-                                    <div className="flex-none w-12 h-12 bg-indigo-50 text-blue-500 rounded-lg flex items-center justify-center">
+                                    <div className="flex-none w-16 h-16 bg-indigo-50 text-blue-500 rounded-lg flex items-center justify-center">
                                         {item.icon}
                                     </div>
                                     <div>
@@ -80,12 +80,12 @@ export function Features() {
                         </ul>
                     </div>
                 </div>
-                <div className="mt-12 lg:mt-0">
+                <div className="w-full lg:w-7/12 mt-20 lg:mt-40">
                     <Image
-                        src="https://raw.githubusercontent.com/sidiDev/remote-assets/main/Safari%20(Big%20Sur)%20-%20Light.png"
+                        src="/features.gif"
                         alt="AI Landing Page Builder Demo"
                         width={500}
-                        height={400}
+                        height={333}
                         className="w-full rounded-lg shadow-md"
                     />
                 </div>

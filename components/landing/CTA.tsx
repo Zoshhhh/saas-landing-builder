@@ -10,8 +10,8 @@ export function CTA() {
                         <h2 className="text-5xl font-bold leading-tight text-gray-900 md:text-5xl">
                             Build your websites with{" "}
                             <span className="inline-block w-fit px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
-                Page Builder
-              </span>
+high performance
+                            a</span>
                         </h2>
                         <p className="text-gray-500 leading-relaxed mt-3 text-lg">
                             Create stunning, responsive landing pages in minutes with our intuitive drag-and-drop builder. Boost your
@@ -35,7 +35,7 @@ export function CTA() {
                     </div>
                     <div className="flex-1 mt-5 mx-auto sm:w-9/12 lg:mt-0 lg:w-auto">
                         <Image
-                            src="/placeholder.svg"
+                            src="/cta.gif"
                             alt="Landing Page Builder Demo"
                             width={600}
                             height={400}
