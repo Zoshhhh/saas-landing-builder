@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Sparkles, Loader2, Check } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { Badge } from "@/components/ui/badge"
 
 interface AIRequestDialogProps {
     open: boolean
@@ -117,6 +118,9 @@ export function AIRequestDialog({ open, onOpenChange, onSubmit, existingComponen
                                     <>
                                         <Sparkles className="mr-2 h-4 w-4" />
                                         Generate Content
+                                        <Badge variant="secondary" className="ml-2 bg-yellow-300 text-yellow-800 font-semibold">
+                                            Beta
+                                        </Badge>
                                     </>
                                 )}
                             </Button>
