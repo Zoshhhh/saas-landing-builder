@@ -11,7 +11,7 @@ export function CTA() {
                             Build your websites with{" "}
                             <span className="inline-block w-fit px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
 high performance
-                            a</span>
+                            </span>
                         </h2>
                         <p className="text-gray-500 leading-relaxed mt-3 text-lg">
                             Create stunning, responsive landing pages in minutes with our intuitive drag-and-drop builder. Boost your
