@@ -1,60 +1,64 @@
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
+"use client"
+
+import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern"
+import { cn } from "@/lib/utils"
 
 export function Hero() {
     return (
-        <section className="py-28">
-            <div className="max-w-screen-xl mx-auto text-gray-600 gap-x-12 items-center justify-between overflow-hidden md:flex md:px-8">
-                <div className="flex-none space-y-5 px-4 sm:max-w-lg md:px-0 lg:max-w-xl">
-                    <h1 className="text-sm text-blue-600 font-medium">Over 200 successful deals</h1>
-                    <h2 className="text-4xl text-gray-800 font-extrabold md:text-5xl">We help startups to grow and make money</h2>
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus voluptatem accusantium doloremque laudantium, totam rem aperiam,
-                        eaque ipsa quae.
+        <div className="relative flex min-h-[calc(100vh-4rem)] w-full flex-col items-center justify-center overflow-hidden bg-white -mt-20">
+            <div className="z-10 max-w-screen-xl mx-auto px-4 md:px-8 text-center">
+                {/* Goal Banner */}
+                <div className="max-w-fit mx-auto mb-8 py-2 px-4 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
+                    <p className="text-sm text-gray-600">
+                        <span className="font-medium text-gray-800">Goal for 2025</span> Create your landing page in minutes 🚀
                     </p>
-                    <div className="items-center gap-x-3 space-y-3 sm:flex sm:space-y-0">
-                        <Link
-                            href="/dashboard"
-                            className="block py-2 px-4 text-center text-white font-medium bg-blue-600 duration-150 hover:bg-blue-500 active:bg-blue-700 rounded-lg shadow-lg hover:shadow-none"
-                        >
-                            Let's get started
-                        </Link>
-                        <Link
-                            href="#"
-                            className="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg md:inline-flex"
-                        >
-                            Get access
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                </div>
+
+                {/* Main Content */}
+                <div className="space-y-6 max-w-5xl mx-auto">
+                    <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-7xl flex flex-col gap-6">
+                        <span>The Ultimate Landing</span>
+                        <div className="flex justify-center items-center gap-4">
+                            <div className="inline-block">
+                <span className="inline-block px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
+                  Page Builder
+                </span>
+                            </div>
+                            <span className="inline-block text-6xl">⚡</span>
+                        </div>
+                    </h1>
+
+                    <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
+                        Design, build and launch beautiful landing pages in minutes. No coding required, just drag and drop
+                        components and customize your page instantly.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
+                        <button className="flex items-center gap-2 px-8 py-3 text-lg font-medium text-gray-700 bg-white/80 backdrop-blur-sm rounded-lg hover:bg-gray-50 w-full sm:w-auto justify-center transition-colors duration-300">
+                            <span>How it works</span>
+                            <svg className="w-6 h-6" viewBox="0 0 20 20" fill="currentColor">
                                 <path
                                     fillRule="evenodd"
-                                    d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                     clipRule="evenodd"
                                 />
                             </svg>
-                        </Link>
+                        </button>
                     </div>
                 </div>
-                <div className="flex-none mt-14 md:mt-0 md:max-w-xl">
-                    <Image
-                        src="https://images.unsplash.com/photo-1573164713619-24c711fe7878?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80"
-                        className="md:rounded-tl-[108px]"
-                        width={500}
-                        height={500}
-                        alt="Hero image"
-                    />
-                </div>
             </div>
-            <div className="mt-14 px-4 md:px-8">
-                <p className="text-center text-sm text-gray-700 font-semibold">Trusted by the best companies</p>
-                <div className="flex justify-center items-center flex-wrap gap-x-12 gap-y-6 mt-6">
-                    <Image src="/placeholder.svg" width={100} height={50} alt="Client Logo 1" />
-                    <Image src="/placeholder.svg" width={100} height={50} alt="Client Logo 2" />
-                    <Image src="/placeholder.svg" width={100} height={50} alt="Client Logo 3" />
-                    <Image src="/placeholder.svg" width={100} height={50} alt="Client Logo 4" />
-                </div>
-            </div>
-        </section>
+
+            {/* Interactive Grid Pattern */}
+            <InteractiveGridPattern
+                className={cn(
+                    "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
+                    "absolute inset-x-0 inset-y-[-30%] h-[140%] skew-y-12 hover:fill-gray-200",
+                )}
+                width={40}
+                height={40}
+                squares={[80, 80]}
+            />
+        </div>
     )
 }
 
