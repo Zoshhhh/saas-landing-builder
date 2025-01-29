@@ -54,7 +54,7 @@ export function Navigation() {
                             <NavigationMenuList>
                                 {/* Products Dropdown */}
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-blue-800 hover:text-blue-600">Products</NavigationMenuTrigger>
+                                    <NavigationMenuTrigger className=" px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">Products</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px]">
                                             <li className="col-span-2">
@@ -111,7 +111,7 @@ export function Navigation() {
                         </SignedOut>
                         <SignedIn>
                             <Link href="/dashboard">
-                                <Button variant="ghost" size="sm" className="text-blue-800 hover:text-blue-600">
+                                <Button variant="ghost" size="sm" className=" px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
                                     Dashboard
                                 </Button>
                             </Link>

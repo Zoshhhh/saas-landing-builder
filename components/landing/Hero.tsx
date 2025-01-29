@@ -18,7 +18,7 @@ export function Hero() {
                 <div className="space-y-6 max-w-5xl mx-auto">
                     <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-7xl flex flex-col gap-6">
                         <span>The Ultimate Landing</span>
-                        <div className="flex justify-center items-center gap-4">
+                          <div className="flex justify-center items-center gap-4">
                             <div className="inline-block">
                     <span className=" px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
                         high performance
