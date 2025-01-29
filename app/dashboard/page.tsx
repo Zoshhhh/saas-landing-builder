@@ -18,6 +18,7 @@ import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
 import { AIRequestDialog } from "@/components/AIRequestDialog"
 import { Sparkles } from "lucide-react"
+import { BorderBeam } from "@/components/ui/border-beam"
 
 interface ComponentProps {
     content?: string
@@ -334,9 +335,18 @@ export default function DashboardContent() {
                                         <Button onClick={() => setIsTemplateDialogOpen(true)} variant="outline" className="mr-2">
                                             <LayoutTemplate className="mr-2 h-5 w-5" /> Templates
                                         </Button>
-                                        <Button onClick={() => setIsAIRequestDialogOpen(true)} variant="outline" className="mr-2">
-                                            <Sparkles className="mr-2 h-5 w-5" /> Ask AI
-                                        </Button>
+                                        <div className="relative">
+                                            <Button
+                                                onClick={() => setIsAIRequestDialogOpen(true)}
+                                                variant="outline"
+                                                className="mr-2 relative overflow-hidden"
+                                            >
+                                                <BorderBeam size={250} duration={12} delay={9} />
+                                                <div className="relative z-10 flex items-center">
+                                                    <Sparkles className="mr-2 h-5 w-5" /> Ask AI
+                                                </div>
+                                            </Button>
+                                        </div>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button onClick={handleDownload} className="bg-blue-500 hover:bg-blue-600">
@@ -410,3 +420,4 @@ export default function DashboardContent() {
         </>
     )
 }
+

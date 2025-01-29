@@ -5,7 +5,6 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
 
-// Liste des composants disponibles
 const availableComponents = [
     "Header1",
     "Header2",
