@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get("id")
     const style = searchParams.get("style")
-
+ 
     if (!id || !style) {
         return NextResponse.json({ error: "Missing id or style parameter" }, { status: 400 })
     }
