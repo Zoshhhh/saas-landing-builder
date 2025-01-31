@@ -4,7 +4,7 @@ export default function Footer2() {
   return (
     <footer className="bg-gray-100 text-gray-600 py-8">
       <div className="container mx-auto flex justify-between">
-        <div>
+        <div> 
           <h3 className="font-bold mb-2">Votre Entreprise</h3>
           <p>&copy; 2023 Tous droits réservés.</p>
         </div>
