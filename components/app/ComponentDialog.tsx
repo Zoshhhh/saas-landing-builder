@@ -137,7 +137,6 @@ interface ComponentDialogProps {
 export function ComponentDialog({ open, onOpenChange, onSelect, existingComponents }: ComponentDialogProps) {
   const [selectedComponent, setSelectedComponent] = React.useState<ComponentOption | null>(null)
 
-  // Réinitialiser le composant sélectionné quand le dialogue s'ouvre
   React.useEffect(() => {
     if (open) {
       setSelectedComponent(null)
@@ -146,7 +145,7 @@ export function ComponentDialog({ open, onOpenChange, onSelect, existingComponen
 
   const handleSelect = (componentId: string, variantName: string) => {
     onSelect(componentId, variantName)
-    onOpenChange(false) // Ferme le dialogue après la sélection
+    onOpenChange(false)
   }
 
   const availableComponents = COMPONENT_OPTIONS.map((component) => ({
