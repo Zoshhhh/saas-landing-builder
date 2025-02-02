@@ -75,11 +75,16 @@ export async function POST(req: Request) {
 
     archive.append(JSON.stringify(packageJson, null, 2), { name: "project/package.json" })
 
+    // Ensure the components directory exists
+    archive.append("", { name: "project/components/" })
+
+    // Create subdirectories for each component type
+
     // Generate and add a main page that includes all selected components
     const mainPageContent = `
-import React from 'react';
+import React from "react";
 ${Object.entries(selectedStyles)
-        .map(([section, style]) => `import ${style} from '../components/${section}';`)
+        .map(([section, style]) => `import ${style} from '../components/${style}';`)
         .join("\n")}
 
 export default function Home() {
@@ -92,68 +97,14 @@ export default function Home() {
 `
     archive.append(mainPageContent, { name: "project/pages/index.tsx" })
 
+    // Génération des composants
     Object.entries(selectedStyles).forEach(([section, style]: [string, string]) => {
-      const templatePath = path.join(process.cwd(), "components", "templates", section, `${style}.tsx`)
+      const templatePath = path.join(process.cwd(), "components", "templates", section.split("-")[0], `${style}.tsx`)
       if (fs.existsSync(templatePath)) {
-        const content = editableContent[section] || ""
-
-        let componentContent = fs.readFileSync(templatePath, "utf-8")
-        // Remove any existing content assignment
-        componentContent = componentContent.replace(/const content = .*?;(\r?\n|\r)/s, "")
-        // Add the new content
-        componentContent = componentContent.replace(
-            "export default function",
-            `const content = ${JSON.stringify(content)};
-
-export default function`,
-        )
-        // Update how content is used in the component
-        componentContent = componentContent.replace(
-            /<([^>]+)>(\s*{content}\s*)<\/([^>]+)>/,
-            "<$1 dangerouslySetInnerHTML={{ __html: content }} />",
-        )
-
-        const fileName = `${style.toLowerCase()}.tsx`
-        archive.append(componentContent, { name: `project/components/${section}/${fileName}` })
+        const componentContent = fs.readFileSync(templatePath, "utf-8")
+        archive.append(componentContent, { name: `project/components/${style}.tsx` })
       } else {
         console.warn(`Component file not found: ${templatePath}`)
-        // Add a placeholder component with different text styles if the file is not found
-        const placeholderContent = `
-import React from 'react';
-
-export default function ${style}() {
-  return (
-    <div className="p-8 space-y-8">
-      <h2 className="text-3xl font-bold">${style} Component</h2>
-      
-      {/* Short line of text */}
-      <p className="text-sm">This is a short line of text.</p>
-      
-      {/* Centered paragraph */}
-      <p className="text-center max-w-2xl mx-auto">
-        This is a centered paragraph. It has a maximum width and is aligned in the center of its container.
-        The text wraps to multiple lines if it exceeds the maximum width.
-      </p>
-      
-      {/* Left-aligned paragraph */}
-      <p className="text-left">
-        This is a left-aligned paragraph. It starts from the left side of its container and continues
-        to the right. This is the default alignment for most text on web pages. It's easy to read
-        and follows the natural reading direction in many languages.
-      </p>
-      
-      {/* Additional text styles */}
-      <div className="space-y-4">
-        <p className="font-bold">This is bold text.</p>
-        <p className="italic">This text is italicized.</p>
-        <p className="underline">This text has an underline.</p>
-        <p className="text-xl">This text is larger than the default size.</p>
-      </div>
-    </div>
-  );
-}
-`
-        archive.append(placeholderContent, { name: `project/components/${section}.tsx` })
       }
     })
 
