@@ -114,14 +114,14 @@ export default function Home() {
     const baseTemplateDir = path.join(process.cwd(), "components", "templates");
 
     Object.entries(selectedStyles).forEach(([section, style]: [string, string]) => {
-      let componentPath = path.join(baseTemplateDir, section, `${style}.tsx`);
+      let componentPath: string | null = path.join(baseTemplateDir, section, `${style}.tsx`);
 
       if (!fs.existsSync(componentPath)) {
         console.warn(`Component not found at default path: ${componentPath}. Searching in subdirectories.`);
         componentPath = findComponentFile(baseTemplateDir, style);
       }
 
-      if (componentPath && fs.existsSync(componentPath)) {
+      if (componentPath && fs.existsSync(componentPath)) { // Validation stricte pour éviter TS2322
         const componentContent = fs.readFileSync(componentPath, "utf-8");
         archive.append(componentContent, { name: `project/components/${style}.tsx` });
         console.log(`Component ${style} added to archive.`);
