@@ -1,44 +1,60 @@
-import { NextResponse } from "next/server"
-import archiver from "archiver"
-import fs from "fs"
-import path from "path"
+import { NextResponse } from "next/server";
+import archiver from "archiver";
+import fs from "fs";
+import path from "path";
 
 interface RequestBody {
-  selectedStyles: { [key: string]: string }
-  componentsOrder: string[]
-  editableContent: { [key: string]: string }
+  selectedStyles: { [key: string]: string };
+  componentsOrder: string[];
+  editableContent: { [key: string]: string };
+}
+
+// Helper function to find a component file in all subdirectories
+function findComponentFile(baseDir: string, componentName: string): string | null {
+  const subdirs = fs.readdirSync(baseDir, { withFileTypes: true });
+
+  for (const subdir of subdirs) {
+    if (subdir.isDirectory()) {
+      const potentialPath = path.join(baseDir, subdir.name, `${componentName}.tsx`);
+      if (fs.existsSync(potentialPath)) {
+        return potentialPath;
+      }
+    }
+  }
+
+  return null;
 }
 
 export async function POST(req: Request) {
-  const { selectedStyles, componentsOrder, editableContent }: RequestBody = await req.json()
-  console.log("Received data for export:", { selectedStyles, componentsOrder, editableContent })
+  const { selectedStyles, componentsOrder, editableContent }: RequestBody = await req.json();
+  console.log("Received data for export:", { selectedStyles, componentsOrder, editableContent });
 
   const archive: archiver.Archiver = archiver("zip", {
     zlib: { level: 9 },
-  })
+  });
 
   return new Promise<NextResponse>((resolve, reject) => {
-    const chunks: Uint8Array[] = []
+    const chunks: Uint8Array[] = [];
 
-    archive.on("data", (chunk) => chunks.push(chunk))
-    archive.on("error", (err) => reject(err))
+    archive.on("data", (chunk) => chunks.push(chunk));
+    archive.on("error", (err) => reject(err));
     archive.on("end", () => {
-      const zipBuffer = Buffer.concat(chunks)
+      const zipBuffer = Buffer.concat(chunks);
       const response = new NextResponse(zipBuffer, {
         headers: {
           "Content-Type": "application/zip",
           "Content-Disposition": "attachment; filename=landing-page-project.zip",
         },
-      })
-      resolve(response)
-    })
+      });
+      resolve(response);
+    });
 
     // Add files to the archive
-    const templateDir = path.join(process.cwd(), "project-template")
+    const templateDir = path.join(process.cwd(), "project-template");
     if (fs.existsSync(templateDir)) {
-      archive.directory(templateDir, "project/")
+      archive.directory(templateDir, "project/");
     } else {
-      console.warn(`Template directory not found: ${templateDir}`)
+      console.warn(`Template directory not found: ${templateDir}`);
     }
 
     // Generate and add package.json
@@ -71,14 +87,12 @@ export async function POST(req: Request) {
         tailwindcss: "^3.3.0",
         typescript: "^4.7.4",
       },
-    }
+    };
 
-    archive.append(JSON.stringify(packageJson, null, 2), { name: "project/package.json" })
+    archive.append(JSON.stringify(packageJson, null, 2), { name: "project/package.json" });
 
     // Ensure the components directory exists
-    archive.append("", { name: "project/components/" })
-
-    // Create subdirectories for each component type
+    archive.append("", { name: "project/components/" });
 
     // Generate and add a main page that includes all selected components
     const mainPageContent = `
@@ -93,22 +107,29 @@ export default function Home() {
       ${componentsOrder.map((section: string) => `<${selectedStyles[section]} />`).join("\n      ")}
     </div>
   );
-}
-`
-    archive.append(mainPageContent, { name: "project/pages/index.tsx" })
+}`;
+    archive.append(mainPageContent, { name: "project/pages/index.tsx" });
 
-    // Génération des composants
+    // Génération des composants avec recherche dans tous les sous-dossiers
+    const baseTemplateDir = path.join(process.cwd(), "components", "templates");
+
     Object.entries(selectedStyles).forEach(([section, style]: [string, string]) => {
-      const templatePath = path.join(process.cwd(), "components", "templates", section.split("-")[0], `${style}.tsx`)
-      if (fs.existsSync(templatePath)) {
-        const componentContent = fs.readFileSync(templatePath, "utf-8")
-        archive.append(componentContent, { name: `project/components/${style}.tsx` })
-      } else {
-        console.warn(`Component file not found: ${templatePath}`)
+      let componentPath = path.join(baseTemplateDir, section, `${style}.tsx`);
+
+      if (!fs.existsSync(componentPath)) {
+        console.warn(`Component not found at default path: ${componentPath}. Searching in subdirectories.`);
+        componentPath = findComponentFile(baseTemplateDir, style);
       }
-    })
 
-    archive.finalize()
-  })
+      if (componentPath && fs.existsSync(componentPath)) {
+        const componentContent = fs.readFileSync(componentPath, "utf-8");
+        archive.append(componentContent, { name: `project/components/${style}.tsx` });
+        console.log(`Component ${style} added to archive.`);
+      } else {
+        console.error(`Component file not found for: ${style}`);
+      }
+    });
+
+    archive.finalize();
+  });
 }
-
