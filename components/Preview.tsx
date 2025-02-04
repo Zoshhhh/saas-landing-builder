@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 
 interface ComponentProps {
   content?: string
+  colors?: any
   onEditStart?: (sectionId: string) => void
   onEditEnd?: (sectionId: string, content: string) => void
 }
@@ -23,19 +24,21 @@ interface PreviewProps {
   }
   onEditStart: (sectionId: string) => void
   onEditEnd: (sectionId: string, content: string) => void
+  componentsColors: any
   className?: string
 }
 
 export default function Preview({
-                                  selectedStyles,
-                                  componentsOrder,
-                                  components,
-                                  isMobile,
-                                  editableContent,
-                                  onEditStart,
-                                  onEditEnd,
-                                  className,
-                                }: PreviewProps) {
+  selectedStyles,
+  componentsOrder,
+  components,
+  isMobile,
+  editableContent,
+  onEditStart,
+  onEditEnd,
+  componentsColors,
+  className,
+}: PreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeHeight, setIframeHeight] = useState("100vh")
 
@@ -72,33 +75,32 @@ export default function Preview({
             import("react-dom/client").then(({ createRoot }) => {
               const reactRoot = createRoot(root)
               reactRoot.render(
-                  <React.StrictMode>
-                    {componentsOrder.map((section, index) => {
-                      const style = selectedStyles[section]
-                      if (style) {
-                        const Component = components[style]
-                        if (Component) {
-                          // Add null check for editableContent[section]
-                          const content =
-                              editableContent && editableContent[section] !== undefined ? editableContent[section] : ""
-                          console.log(`Rendering section: ${section}, style: ${style}, content: ${content}`)
-                          return (
-                              <Component
-                                  key={`${section}-${style}-${index}`}
-                                  content={content}
-                                  onEditStart={() => onEditStart(section)}
-                                  onEditEnd={(newContent) => onEditEnd(section, newContent)}
-                              />
-                          )
-                        } else {
-                          console.warn(`Component not found for style: ${style}`)
-                        }
+                <React.StrictMode>
+                  {componentsOrder.map((section, index) => {
+                    const style = selectedStyles[section]
+                    if (style) {
+                      const Component = components[style]
+                      if (Component) {
+                        const content =
+                          editableContent && editableContent[section] !== undefined ? editableContent[section] : ""
+                        return (
+                          <Component
+                            key={`${section}-${style}-${index}`}
+                            content={content}
+                            colors={componentsColors}
+                            onEditStart={() => onEditStart(section)}
+                            onEditEnd={(newContent) => onEditEnd(section, newContent)}
+                          />
+                        )
                       } else {
-                        console.warn(`Style not found for section: ${section}`)
+                        console.warn(`Component not found for style: ${style}`)
                       }
-                      return null
-                    })}
-                  </React.StrictMode>,
+                    } else {
+                      console.warn(`Style not found for section: ${section}`)
+                    }
+                    return null
+                  })}
+                </React.StrictMode>,
               )
             })
           }
@@ -125,26 +127,25 @@ export default function Preview({
         resizeObserver.unobserve(iframeRef.current)
       }
     }
-  }, [selectedStyles, componentsOrder, components, editableContent, onEditStart, onEditEnd])
+  }, [selectedStyles, componentsOrder, components, editableContent, onEditStart, onEditEnd, componentsColors])
 
   return (
-      <div className={cn("w-full h-full flex items-center justify-center bg-gray-100 p-6", className)}>
-        <div
-            className={cn(
-                "relative transition-all duration-300 ease-in-out shadow-2xl",
-                isMobile ? "w-[390px]" : "w-full max-w-[1280px] min-w-[800px]",
-            )}
-        >
-          <BrowserFrame isMobile={isMobile}>
-            <iframe
-                ref={iframeRef}
-                title="Preview"
-                className="w-full h-full border-0 transition-all duration-300"
-                style={{ height: iframeHeight }}
-            />
-          </BrowserFrame>
-        </div>
+    <div className={cn("w-full h-full flex items-center justify-center bg-gray-100 p-6", className)}>
+      <div
+        className={cn(
+          "relative transition-all duration-300 ease-in-out shadow-2xl",
+          isMobile ? "w-[390px]" : "w-full max-w-[1280px] min-w-[800px]",
+        )}
+      >
+        <BrowserFrame isMobile={isMobile}>
+          <iframe
+            ref={iframeRef}
+            title="Preview"
+            className="w-full h-full border-0 transition-all duration-300"
+            style={{ height: iframeHeight }}
+          />
+        </BrowserFrame>
       </div>
+    </div>
   )
 }
-

@@ -70,6 +70,8 @@ export default function DashboardContent() {
     const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false)
     const [showInitialChoice, setShowInitialChoice] = useState(true)
     const [isAIRequestDialogOpen, setIsAIRequestDialogOpen] = useState(false)
+    const [componentsColors, setComponentsColors] = useState<any>({})
+    const [compId, setCompId] = useState<string>('')
 
     useEffect(() => {
         console.log("Current components order:", componentsOrder)
@@ -316,6 +318,14 @@ export default function DashboardContent() {
         }
     }, [])
 
+    const handleUpdateColors = useCallback((componentId: string, colors: any) => {
+        setCompId(componentId)
+        setComponentsColors((prev: any) => ({
+          ...prev,
+          [componentId]: colors[componentId]
+        }))
+      }, [])
+
     useEffect(() => {
         loadState()
     }, [loadState])
@@ -347,6 +357,7 @@ export default function DashboardContent() {
                                     onDelete={handleDelete}
                                     onMove={handleMove}
                                     selectedSection={selectedSection}
+                                    onUpdateColors={handleUpdateColors} 
                                 />
                             </div>
                             <SidebarInset className="flex-1">
@@ -395,6 +406,7 @@ export default function DashboardContent() {
                                             isMobile={isMobile}
                                             editableContent={editableContent}
                                             onEditStart={handleEditStart}
+                                            componentsColors={componentsColors[compId]}
                                             onEditEnd={handleEditEnd}
                                             className="min-h-full"
                                         />

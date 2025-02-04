@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable, type DropResult } from "react-beautiful-dnd"
 import {
   Plus,
-  ChevronUp,
   ChevronDown,
   Trash2,
   Layout,
@@ -14,22 +13,19 @@ import {
   FootprintsIcon as FooterIcon,
   Search,
   Code,
+  Palette,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ComponentDialog } from "@/components/app/ComponentDialog"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { CodeViewer } from "@/components/CodeViewer"
+import { ColorPickerDialog, ComponentColors } from "../ColorPickerDialog"
 
 interface SidebarNavigationProps {
   sections: {
@@ -37,11 +33,18 @@ interface SidebarNavigationProps {
     label: string
     style: string
     darkMode: boolean
+    colors?: {
+      textColor: string
+      backgroundColor: string
+      buttonColor: string
+      buttonTextColor: string
+    }
   }[]
   onAdd: (sectionId: string, style: string) => void
   onSelect: (id: string) => void
   onDelete: (id: string) => void
   onMove: (id: string, direction: "up" | "down") => void
+  onUpdateColors: (id: string, colors: ComponentColors) => void
   selectedSection: string | null
 }
 
@@ -69,12 +72,41 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                                                       onDelete,
                                                                       onMove,
                                                                       selectedSection,
+                                                                      onUpdateColors,
                                                                     }: SidebarNavigationProps) => {
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [codeViewerOpen, setCodeViewerOpen] = useState(false)
   const [currentCode, setCurrentCode] = useState("")
   const [currentFileName, setCurrentFileName] = useState("")
+  const [colorPickerOpen, setColorPickerOpen] = useState(false)
+  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
+  const [colors, setColors] = useState<any>({});
+
+  const handleOpenColorPicker = (sectionId: string) => {
+    setSelectedComponentId(sectionId);
+    if (!colors[sectionId]) {
+      setColors((prev: any) => ({
+        ...prev,
+        [sectionId]: {
+          textColor: '#000000',
+          backgroundColor: '#ffffff',
+          buttonColor: '#000000',
+          buttonTextColor: '#ffffff'
+        }
+      }));
+    }
+    setColorPickerOpen(true);
+  }
+  console.log(colors)
+  
+  const handleSaveColors = (colors: ComponentColors) => {
+    if (!selectedComponentId) return;
+    
+    console.log('Saving colors for component:', selectedComponentId, colors);
+    onUpdateColors(selectedComponentId, colors);
+    setColorPickerOpen(false);
+  }
 
   const filteredSections = sections.filter((section) => section.label.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -189,22 +221,22 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                     </div>
                                     <div className="flex items-center ml-auto space-x-1">
                                       <TooltipProvider>
-                                        <Tooltip>
+                                      <Tooltip>
                                           <TooltipTrigger asChild>
                                             <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
-                                                onClick={(e) => {
-                                                  e.stopPropagation()
-                                                  onMove(section.id, "up")
-                                                }}
+                                              variant="ghost"
+                                              size="icon"
+                                              className="h-6 w-6 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-200"
+                                              onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleOpenColorPicker(section.id)
+                                              }}
                                             >
-                                              <ChevronUp className="h-4 w-4" />
+                                              <Palette className="h-4 w-4" />
                                             </Button>
                                           </TooltipTrigger>
                                           <TooltipContent>
-                                            <p>Move up</p>
+                                            <p>Customize Colors</p>
                                           </TooltipContent>
                                         </Tooltip>
                                       </TooltipProvider>
@@ -293,7 +325,14 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             code={currentCode}
             fileName={currentFileName}
         />
+        <ColorPickerDialog
+        open={colorPickerOpen}
+        onOpenChange={setColorPickerOpen}
+        onSave={handleSaveColors}
+        colors={colors}
+        setColors={setColors}
+        componentId={selectedComponentId || ''}
+      />
       </>
   )
 }
-
