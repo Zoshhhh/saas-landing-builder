@@ -78,7 +78,7 @@ const PricingAndFeatures = () => {
                                     <p className="mt-3 sm:text-sm">{plan.desc}</p>
                                 </div>
                                 <div className="flex-none text-gray-800 text-2xl font-semibold sm:text-3xl">
-                                    ${plan.price} <span className="text-xl text-gray-600 font-normal">/mo</span>
+                                    ${plan.price} <span className="text-xl text-gray-600 font-normal">/ lifetime</span>
                                 </div>
                             </div>
                             <button className="mt-4 px-3 py-3 rounded-lg w-full font-semibold text-sm duration-150 text-white bg-blue-500 hover:bg-indigo-500 active:bg-indigo-700">
