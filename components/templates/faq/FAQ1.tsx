@@ -1,18 +1,29 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import React, { useEffect } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+type ComponentColors = {
+  backgroundColor?: string;
+  titleColor?: string;
+  accordionBackgroundColor?: string;
+  accordionBorderColor?: string;
+  questionTextColor?: string;
+  answerTextColor?: string;
+  hoverColor?: string;
+};
 
 type FAQ1Props = {
-  content?: string
-}
+  content?: string;
+  colors?: ComponentColors;
+};
 
-export default function FAQ1({ content }: FAQ1Props) {
+export default function FAQ1({ content, colors }: FAQ1Props) {
   useEffect(() => {
-    console.log("FAQ1 content:", content)
-  }, [content])
+    console.log("FAQ1 content:", content);
+  }, [content, colors]);
 
-  let title = "Frequently Asked Questions"
+  let title = "Frequently Asked Questions";
   let faqs = [
     {
       question: "How do I get started?",
@@ -38,52 +49,59 @@ export default function FAQ1({ content }: FAQ1Props) {
       answer:
           "Yes, you can cancel your subscription at any time. If you cancel, you'll retain access to the service until the end of your current billing period.",
     },
-  ]
-
-  if (content) {
-    try {
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(content, "text/html")
-
-      const titleElement = doc.querySelector("h2")
-      if (titleElement) title = titleElement.textContent || title
-
-      const faqElements = doc.querySelectorAll("dt, dd")
-      if (faqElements.length > 0) {
-        faqs = []
-        for (let i = 0; i < faqElements.length; i += 2) {
-          const question = faqElements[i].textContent || ""
-          const answer = faqElements[i + 1].textContent || ""
-          faqs.push({ question, answer })
-        }
-      }
-    } catch (error) {
-      console.error("Error parsing content:", error)
-    }
-  }
+  ];
 
   return (
-      <section className="py-12 bg-gray-50">
+      <section
+          className="py-12"
+          style={{
+            backgroundColor: colors?.backgroundColor || "#F9FAFB",
+          }}
+      >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
+          <h2
+              className="text-3xl font-bold text-center mb-8"
+              style={{
+                color: colors?.titleColor || "#1E3A8A",
+              }}
+          >
+            {title}
+          </h2>
           <div className="max-w-3xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, index) => (
                   <AccordionItem
                       key={index}
                       value={`item-${index}`}
-                      className="bg-white rounded-lg shadow-sm border border-gray-200"
+                      className="rounded-lg shadow-sm border transition-all duration-300"
+                      style={{
+                        backgroundColor: colors?.accordionBackgroundColor || "white",
+                        borderColor: colors?.accordionBorderColor || "#E5E7EB",
+                      }}
                   >
-                    <AccordionTrigger className="px-6 py-4 text-left hover:bg-gray-50 transition-colors">
-                      <span className="font-medium text-gray-900">{faq.question}</span>
+                    <AccordionTrigger
+                        className="px-6 py-4 text-left transition-colors duration-200"
+                        style={{
+                          color: colors?.questionTextColor || "#1E3A8A",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colors?.hoverColor || "#F3F4F6")}
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colors?.accordionBackgroundColor || "white")}
+                    >
+                      <span className="font-medium">{faq.question}</span>
                     </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-4 pt-2 text-gray-600">{faq.answer}</AccordionContent>
+                    <AccordionContent
+                        className="px-6 pb-4 pt-2"
+                        style={{
+                          color: colors?.answerTextColor || "#4B5563",
+                        }}
+                    >
+                      {faq.answer}
+                    </AccordionContent>
                   </AccordionItem>
               ))}
             </Accordion>
           </div>
         </div>
       </section>
-  )
+  );
 }
-
