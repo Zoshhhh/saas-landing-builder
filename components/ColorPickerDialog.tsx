@@ -1,31 +1,33 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import * as React from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
+import { Label } from "./ui/label"
+import { Input } from "./ui/input"
+import { Button } from "./ui/button"
+import { Check } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 
 interface ColorPickerDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSave: (updatedColors: ColorState) => void;
-    colors: ColorState;
-    setColors: React.Dispatch<React.SetStateAction<ColorState>>;
-    componentId: string;
+    open: boolean
+    onOpenChange: (open: boolean) => void
+    onSave: (updatedColors: ColorState) => void
+    colors: ColorState
+    setColors: React.Dispatch<React.SetStateAction<ColorState>>
+    componentId: string
 }
 
 export interface ComponentColors {
-    textColor: string;
-    backgroundColor: string;
-    buttonColor: string;
-    buttonTextColor: string;
-    borderColor?: string;
-    highlightColor?: string;
+    textColor: string
+    backgroundColor: string
+    buttonColor: string
+    buttonTextColor: string
+    borderColor?: string
+    highlightColor?: string
 }
 
 interface ColorState {
-    [componentId: string]: ComponentColors;
+    [componentId: string]: ComponentColors
 }
 
 const DEFAULT_COLORS: ComponentColors = {
@@ -35,10 +37,37 @@ const DEFAULT_COLORS: ComponentColors = {
     buttonTextColor: "#ffffff",
     borderColor: "#cccccc",
     highlightColor: "#ffcc00",
-};
+}
+
+const COLOR_TEMPLATES: { [key: string]: ComponentColors } = {
+    Light: {
+        textColor: "#000000",
+        backgroundColor: "#ffffff",
+        buttonColor: "#0070f3",
+        buttonTextColor: "#ffffff",
+        borderColor: "#e5e7eb",
+        highlightColor: "#f3f4f6",
+    },
+    Dark: {
+        textColor: "#ffffff",
+        backgroundColor: "#1f2937",
+        buttonColor: "#3b82f6",
+        buttonTextColor: "#ffffff",
+        borderColor: "#374151",
+        highlightColor: "#374151",
+    },
+    Earthy: {
+        textColor: "#4b5563",
+        backgroundColor: "#faf5ef",
+        buttonColor: "#8b5cf6",
+        buttonTextColor: "#ffffff",
+        borderColor: "#d1d5db",
+        highlightColor: "#e5e7eb",
+    },
+}
 
 // Helper function to validate hex color
-const isValidHex = (hex: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+const isValidHex = (hex: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex)
 
 const ColorInput = React.memo(
     ({
@@ -47,23 +76,23 @@ const ColorInput = React.memo(
          value,
          onChange,
      }: {
-        id: string;
-        label: string;
-        value: string;
-        onChange: (value: string) => void;
+        id: string
+        label: string
+        value: string
+        onChange: (value: string) => void
     }) => {
-        const [hexValue, setHexValue] = React.useState(value);
+        const [hexValue, setHexValue] = React.useState(value)
 
         React.useEffect(() => {
-            setHexValue(value);
-        }, [value]);
+            setHexValue(value)
+        }, [value])
 
         const handleHexChange = (hex: string) => {
-            setHexValue(hex);
+            setHexValue(hex)
             if (isValidHex(hex)) {
-                onChange(hex);
+                onChange(hex)
             }
-        };
+        }
 
         return (
             <div className="w-full space-y-1">
@@ -76,9 +105,7 @@ const ColorInput = React.memo(
                         type="text"
                         value={hexValue}
                         onChange={(e) => handleHexChange(e.target.value)}
-                        className={`w-full text-xs font-mono px-2 py-1 ${
-                            !isValidHex(hexValue) ? "border-red-500" : ""
-                        }`}
+                        className={`w-full text-xs font-mono px-2 py-1 ${!isValidHex(hexValue) ? "border-red-500" : ""}`}
                         placeholder="#000000"
                     />
                     <Input
@@ -90,25 +117,15 @@ const ColorInput = React.memo(
                     />
                 </div>
             </div>
-        );
-    }
-);
+        )
+    },
+)
 
-ColorInput.displayName = "ColorInput";
+ColorInput.displayName = "ColorInput"
 
 export const ColorPickerDialog = React.memo(
-    ({
-         open,
-         onOpenChange,
-         onSave,
-         colors,
-         setColors,
-         componentId,
-     }: ColorPickerDialogProps) => {
-        const currentColors = React.useMemo(
-            () => colors[componentId] || DEFAULT_COLORS,
-            [colors, componentId]
-        );
+    ({ open, onOpenChange, onSave, colors, setColors, componentId }: ColorPickerDialogProps) => {
+        const currentColors = React.useMemo(() => colors[componentId] || DEFAULT_COLORS, [colors, componentId])
 
         const handleColorChange = React.useCallback(
             (field: keyof ComponentColors, value: string) => {
@@ -118,104 +135,173 @@ export const ColorPickerDialog = React.memo(
                         ...(prev[componentId] || DEFAULT_COLORS),
                         [field]: value,
                     },
-                }));
+                }))
             },
-            [componentId, setColors]
-        );
+            [componentId, setColors],
+        )
 
         const handleSave = React.useCallback(() => {
-            // ✅ Corrige l'erreur TypeScript et met à jour toutes les couleurs
-            onSave({ ...colors, [componentId]: currentColors });
-            onOpenChange(false);
-        }, [colors, currentColors, onSave, onOpenChange]);
+            onSave({ ...colors, [componentId]: currentColors })
+            onOpenChange(false)
+        }, [colors, currentColors, onSave, onOpenChange, componentId])
 
-        // Preview section
+        const handleTemplateSelect = (templateName: string) => {
+            const template = COLOR_TEMPLATES[templateName]
+            if (template) {
+                setColors((prev) => ({
+                    ...prev,
+                    [componentId]: template,
+                }))
+            }
+        }
+
+        const handleResetColors = () => {
+            setColors((prev) => ({
+                ...prev,
+                [componentId]: DEFAULT_COLORS,
+            }))
+        }
+
         const PreviewSection = () => (
             <div
-                className="p-3 rounded-lg border shadow-sm text-center"
+                className="p-4 rounded-lg border shadow-sm"
                 style={{
                     backgroundColor: currentColors.backgroundColor,
                     borderColor: currentColors.borderColor,
                 }}
             >
-                <p className="text-sm mb-2" style={{ color: currentColors.textColor }}>
-                    Preview Text
+                <h3 className="text-lg font-semibold mb-2" style={{ color: currentColors.textColor }}>
+                    Preview
+                </h3>
+                <p className="text-sm mb-4" style={{ color: currentColors.textColor }}>
+                    This is how your component will look with the selected colors.
                 </p>
-                <button
-                    className="py-1 px-3 rounded-md transition-colors border"
-                    style={{
-                        backgroundColor: currentColors.buttonColor,
-                        color: currentColors.buttonTextColor,
-                        borderColor: currentColors.borderColor,
-                    }}
-                >
-                    Preview Button
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        className="py-2 px-4 rounded-md transition-colors"
+                        style={{
+                            backgroundColor: currentColors.buttonColor,
+                            color: currentColors.buttonTextColor,
+                        }}
+                    >
+                        Primary Button
+                    </button>
+                    <button
+                        className="py-2 px-4 rounded-md transition-colors border"
+                        style={{
+                            backgroundColor: "transparent",
+                            color: currentColors.buttonColor,
+                            borderColor: currentColors.buttonColor,
+                        }}
+                    >
+                        Secondary Button
+                    </button>
+                </div>
                 <p
-                    className="mt-2 text-xs font-semibold"
+                    className="mt-4 text-sm font-semibold"
                     style={{
                         color: currentColors.highlightColor,
                     }}
                 >
-                    Highlight Text
+                    Highlighted text example
                 </p>
             </div>
-        );
+        )
 
         return (
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="sm:max-w-[380px]">
+                <DialogContent className="sm:max-w-[420px]">
                     <DialogHeader>
                         <DialogTitle className="text-lg">Customize Colors</DialogTitle>
                     </DialogHeader>
 
-                    {/* Optimisation UX - Suppression de la scrollbar */}
-                    <div className="grid gap-3 py-2">
+                    <div className="grid gap-4 py-4">
                         <PreviewSection />
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorInput
-                                id="textColor"
-                                label="Text"
-                                value={currentColors.textColor}
-                                onChange={(value) => handleColorChange("textColor", value)}
-                            />
-                            <ColorInput
-                                id="backgroundColor"
-                                label="Background"
-                                value={currentColors.backgroundColor}
-                                onChange={(value) => handleColorChange("backgroundColor", value)}
-                            />
-                            <ColorInput
-                                id="buttonColor"
-                                label="Button"
-                                value={currentColors.buttonColor}
-                                onChange={(value) => handleColorChange("buttonColor", value)}
-                            />
-                            <ColorInput
-                                id="buttonTextColor"
-                                label="Button Text"
-                                value={currentColors.buttonTextColor}
-                                onChange={(value) => handleColorChange("buttonTextColor", value)}
-                            />
-                            <ColorInput
-                                id="borderColor"
-                                label="Border"
-                                value={currentColors.borderColor || "#cccccc"}
-                                onChange={(value) => handleColorChange("borderColor", value)}
-                            />
-                            <ColorInput
-                                id="highlightColor"
-                                label="Highlight"
-                                value={currentColors.highlightColor || "#ffcc00"}
-                                onChange={(value) => handleColorChange("highlightColor", value)}
-                            />
-                        </div>
+                        <Tabs defaultValue="templates" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 gap-2 p-1 bg-muted rounded-lg">
+                                <TabsTrigger
+                                    value="templates"
+                                    className="px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                                >
+                                    Templates
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="custom"
+                                    className="px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                                >
+                                    Custom
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="templates" className="mt-2">
+                                <div className="grid grid-cols-3 gap-2">
+                                    {Object.entries(COLOR_TEMPLATES).map(([name, colors]) => (
+                                        <button
+                                            key={name}
+                                            className="p-2 rounded-md text-xs font-medium transition-all hover:scale-105 active:scale-95"
+                                            style={{
+                                                backgroundColor: colors.backgroundColor,
+                                                color: colors.textColor,
+                                                border: `1px solid ${colors.borderColor}`,
+                                            }}
+                                            onClick={() => handleTemplateSelect(name)}
+                                        >
+                                            {name}
+                                            {JSON.stringify(currentColors) === JSON.stringify(colors) && (
+                                                <Check className="absolute top-1 right-1 w-3 h-3" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </TabsContent>
+                            <TabsContent value="custom" className="mt-2">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <ColorInput
+                                        id="textColor"
+                                        label="Text"
+                                        value={currentColors.textColor}
+                                        onChange={(value) => handleColorChange("textColor", value)}
+                                    />
+                                    <ColorInput
+                                        id="backgroundColor"
+                                        label="Background"
+                                        value={currentColors.backgroundColor}
+                                        onChange={(value) => handleColorChange("backgroundColor", value)}
+                                    />
+                                    <ColorInput
+                                        id="buttonColor"
+                                        label="Button"
+                                        value={currentColors.buttonColor}
+                                        onChange={(value) => handleColorChange("buttonColor", value)}
+                                    />
+                                    <ColorInput
+                                        id="buttonTextColor"
+                                        label="Button Text"
+                                        value={currentColors.buttonTextColor}
+                                        onChange={(value) => handleColorChange("buttonTextColor", value)}
+                                    />
+                                    <ColorInput
+                                        id="borderColor"
+                                        label="Border"
+                                        value={currentColors.borderColor || "#cccccc"}
+                                        onChange={(value) => handleColorChange("borderColor", value)}
+                                    />
+                                    <ColorInput
+                                        id="highlightColor"
+                                        label="Highlight"
+                                        value={currentColors.highlightColor || "#ffcc00"}
+                                        onChange={(value) => handleColorChange("highlightColor", value)}
+                                    />
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </div>
 
-                    {/* Buttons */}
                     <div className="flex justify-end gap-2 pt-2">
                         <Button variant="outline" className="text-sm" onClick={() => onOpenChange(false)}>
                             Cancel
+                        </Button>
+                        <Button variant="outline" className="text-sm" onClick={handleResetColors}>
+                            Reset
                         </Button>
                         <Button className="text-sm" onClick={handleSave}>
                             Save
@@ -223,8 +309,9 @@ export const ColorPickerDialog = React.memo(
                     </div>
                 </DialogContent>
             </Dialog>
-        );
-    }
-);
+        )
+    },
+)
 
-ColorPickerDialog.displayName = "ColorPickerDialog";
+ColorPickerDialog.displayName = "ColorPickerDialog"
+
