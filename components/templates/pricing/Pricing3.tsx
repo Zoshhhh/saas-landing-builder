@@ -1,20 +1,38 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import React, { useEffect } from "react";
+import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type ComponentColors = {
+  backgroundColor?: string;
+  titleColor?: string;
+  subtitleColor?: string;
+  cardBackgroundColor?: string;
+  cardBorderColor?: string;
+  highlightedCardBorderColor?: string;
+  highlightedShadowColor?: string;
+  priceTextColor?: string;
+  featureTextColor?: string;
+  featureIconColor?: string;
+  buttonBackgroundColor?: string;
+  buttonTextColor?: string;
+  highlightedButtonBackgroundColor?: string;
+  highlightedButtonTextColor?: string;
+};
 
 type Pricing3Props = {
-  content?: string
-}
+  content?: string;
+  colors?: ComponentColors;
+};
 
-export default function Pricing3({ content }: Pricing3Props) {
+export default function Pricing3({ content, colors }: Pricing3Props) {
   useEffect(() => {
-    console.log("Pricing3 content:", content)
-  }, [content])
+    console.log("Pricing3 content:", content);
+  }, [content, colors]);
 
-  let title = "Pricing Plans"
-  let subtitle = "Choose the perfect plan for your needs"
+  let title = "Pricing Plans";
+  let subtitle = "Choose the perfect plan for your needs";
   let plans = [
     {
       name: "Starter",
@@ -50,70 +68,96 @@ export default function Pricing3({ content }: Pricing3Props) {
       ],
       cta: "Contact sales",
     },
-  ]
-
-  if (content) {
-    try {
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(content, "text/html")
-
-      const titleElement = doc.querySelector("h2")
-      if (titleElement) title = titleElement.textContent || title
-
-      const subtitleElement = doc.querySelector("p")
-      if (subtitleElement) subtitle = subtitleElement.textContent || subtitle
-
-      const planElements = doc.querySelectorAll(".plan")
-      if (planElements.length > 0) {
-        plans = Array.from(planElements).map((planElement) => ({
-          name: planElement.querySelector("h3")?.textContent || "",
-          price: planElement.querySelector(".price")?.textContent || "",
-          description: planElement.querySelector(".description")?.textContent || "",
-          features: Array.from(planElement.querySelectorAll("li")).map((li) => li.textContent || ""),
-          cta: planElement.querySelector("button")?.textContent || "",
-          highlighted: planElement.classList.contains("highlighted"),
-        }))
-      }
-    } catch (error) {
-      console.error("Error parsing content:", error)
-    }
-  }
+  ];
 
   return (
-      <section className="py-16 bg-gradient-to-b from-indigo-50 to-white">
+      <section
+          className="py-16"
+          style={{
+            backgroundColor: colors?.backgroundColor || "#EEF2FF",
+          }}
+      >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">{title}</h2>
-          <p className="text-xl text-center text-gray-600 mb-12">{subtitle}</p>
+          <h2
+              className="text-3xl font-bold text-center mb-4"
+              style={{ color: colors?.titleColor || "#1E3A8A" }}
+          >
+            {title}
+          </h2>
+          <p
+              className="text-xl text-center mb-12"
+              style={{ color: colors?.subtitleColor || "#4B5563" }}
+          >
+            {subtitle}
+          </p>
           <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan, index) => (
                 <div
                     key={index}
-                    className={`bg-white rounded-2xl overflow-hidden ${
-                        plan.highlighted ? "shadow-xl border-2 border-indigo-500 transform md:-translate-y-4" : "shadow-lg"
+                    className={`rounded-2xl overflow-hidden transition-transform ${
+                        plan.highlighted ? "transform md:-translate-y-4" : ""
                     }`}
+                    style={{
+                      backgroundColor: colors?.cardBackgroundColor || "white",
+                      border: plan.highlighted
+                          ? `2px solid ${colors?.highlightedCardBorderColor || "#4F46E5"}`
+                          : `1px solid ${colors?.cardBorderColor || "#E5E7EB"}`,
+                      boxShadow: plan.highlighted
+                          ? `0px 10px 20px ${colors?.highlightedShadowColor || "rgba(79, 70, 229, 0.3)"}`
+                          : "none",
+                    }}
                 >
                   <div className="p-8">
-                    <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
-                    <p className="text-gray-600 mb-4">{plan.description}</p>
-                    <p className="text-4xl font-bold mb-6">
+                    <h3
+                        className="text-2xl font-semibold mb-2"
+                        style={{ color: colors?.titleColor || "#1E3A8A" }}
+                    >
+                      {plan.name}
+                    </h3>
+                    <p
+                        className="mb-4"
+                        style={{ color: colors?.subtitleColor || "#4B5563" }}
+                    >
+                      {plan.description}
+                    </p>
+                    <p
+                        className="text-4xl font-bold mb-6"
+                        style={{ color: colors?.priceTextColor || "#1E3A8A" }}
+                    >
                       {plan.price === "Custom" ? (
                           "Custom"
                       ) : (
                           <>
                             ${plan.price}
-                            <span className="text-gray-500 text-base font-normal">/month</span>
+                            <span className="text-base font-normal">/month</span>
                           </>
                       )}
                     </p>
                     <ul className="mb-8 space-y-3">
                       {plan.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-center">
-                            <Check className="h-5 w-5 text-indigo-500 mr-3" />
-                            <span>{feature}</span>
+                            <Check
+                                className="h-5 w-5 mr-3"
+                                style={{ color: colors?.featureIconColor || "#4F46E5" }}
+                            />
+                            <span style={{ color: colors?.featureTextColor || "#4B5563" }}>
+                        {feature}
+                      </span>
                           </li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant={plan.highlighted ? "default" : "outline"} size="lg">
+                    <Button
+                        className="w-full"
+                        style={{
+                          backgroundColor: plan.highlighted
+                              ? colors?.highlightedButtonBackgroundColor || "#4F46E5"
+                              : colors?.buttonBackgroundColor || "transparent",
+                          color: plan.highlighted
+                              ? colors?.highlightedButtonTextColor || "white"
+                              : colors?.buttonTextColor || "#4F46E5",
+                          borderColor: colors?.buttonTextColor || "#4F46E5",
+                        }}
+                    >
                       {plan.cta}
                     </Button>
                   </div>
@@ -122,6 +166,5 @@ export default function Pricing3({ content }: Pricing3Props) {
           </div>
         </div>
       </section>
-  )
+  );
 }
-
