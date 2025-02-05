@@ -4,16 +4,26 @@ import React, { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import Image from "next/image"
+
+type ComponentColors = {
+  backgroundColor?: string
+  textColor?: string
+  highlightColor?: string
+  buttonColor?: string
+  buttonTextColor?: string
+  inputTextColor?: string
+  inputBackgroundColor?: string
+}
 
 type Hero2Props = {
   content?: string
+  colors?: ComponentColors
 }
 
-export default function Hero2({ content }: Hero2Props) {
+export default function Hero2({ content, colors }: Hero2Props) {
   useEffect(() => {
     console.log("Hero2 content:", content)
-  }, [content])
+  }, [content, colors])
 
   let title = "Optimize your website for"
   let titleHighlight = "Search engine"
@@ -45,29 +55,79 @@ export default function Hero2({ content }: Hero2Props) {
   }
 
   return (
-      <section className="py-16 mx-auto max-w-screen-xl px-4 md:px-8">
+      <section
+          className="py-16 mx-auto max-w-screen-xl px-4 md:px-8"
+          style={{
+            backgroundColor: colors?.backgroundColor || "white",
+          }}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Texte */}
           <div className="space-y-4 sm:text-center lg:text-left">
-            <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">
+            <h1
+                className="font-bold text-4xl xl:text-5xl"
+                style={{
+                  color: colors?.textColor || "#111827",
+                }}
+            >
               {title}
-              <span className="text-blue-600"> {titleHighlight}</span>
+              <span
+                  style={{
+                    color: colors?.highlightColor || "#3B82F6",
+                  }}
+              >
+              {" "}
+                {titleHighlight}
+            </span>
             </h1>
-            <p className="text-gray-500 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">{description}</p>
+            <p
+                className="max-w-xl leading-relaxed sm:mx-auto lg:ml-0"
+                style={{
+                  color: colors?.textColor || "#4B5563",
+                }}
+            >
+              {description}
+            </p>
             <div>
-              <p className="text-gray-800 py-3">{subscribeText}</p>
+              <p
+                  className="py-3"
+                  style={{
+                    color: colors?.textColor || "#111827",
+                  }}
+              >
+                {subscribeText}
+              </p>
               <form className="items-center space-y-3 sm:justify-center sm:space-x-3 sm:space-y-0 sm:flex lg:justify-start">
-                <Input type="text" placeholder="Enter your email" className="text-gray-500 w-full sm:w-72" />
-                <Button type="submit" className="w-full sm:w-auto">
+                <Input
+                    type="text"
+                    placeholder="Enter your email"
+                    className="w-full sm:w-72"
+                    style={{
+                      color: colors?.inputTextColor || "#374151",
+                      backgroundColor: colors?.inputBackgroundColor || "#F3F4F6",
+                    }}
+                />
+                <Button
+                    type="submit"
+                    className="w-full sm:w-auto"
+                    style={{
+                      backgroundColor: colors?.buttonColor || "#3B82F6",
+                      color: colors?.buttonTextColor || "white",
+                    }}
+                >
                   {buttonText}
                 </Button>
               </form>
             </div>
           </div>
+
+          {/* Carré gris pour indiquer l'emplacement de l'image */}
           <div className="flex justify-center lg:justify-end">
-            <Skeleton className="w-full max-w-[500px] h-[300px] bg-gray-200" />
+            <Skeleton
+                className="w-full max-w-[500px] h-[300px] bg-gray-200 rounded-lg"
+            />
           </div>
         </div>
       </section>
   )
 }
-
