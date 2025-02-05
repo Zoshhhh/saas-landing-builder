@@ -1,6 +1,34 @@
-export default () => {
-    const features = [
+"use client";
+
+import React, { useEffect } from "react";
+
+type ComponentColors = {
+    backgroundColor?: string;
+    titleColor?: string;
+    subtitleColor?: string;
+    textColor?: string;
+    iconColor?: string;
+    borderColor?: string;
+};
+
+type FeaturesProps = {
+    content?: string;
+    colors?: ComponentColors;
+};
+
+export default function Features({ content, colors }: FeaturesProps) {
+    useEffect(() => {
+        console.log("Features content:", content);
+    }, [content]);
+
+    let title = "Do more with less complexity";
+    let subtitle = "Features";
+    let description =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.";
+    let features = [
         {
+            title: "Analytics",
+            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -17,10 +45,10 @@ export default () => {
                     />
                 </svg>
             ),
-            title: "Analytics",
-            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
         },
         {
+            title: "Datacenter security",
+            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -37,10 +65,10 @@ export default () => {
                     />
                 </svg>
             ),
-            title: "Datacenter security",
-            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
         },
         {
+            title: "Build on your terms",
+            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -57,34 +85,75 @@ export default () => {
                     />
                 </svg>
             ),
-            title: "Build on your terms",
-            desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius.",
         },
-    ]
+    ];
 
     return (
-        <section className="py-14">
-            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
+        <section
+            className="py-14"
+            style={{
+                backgroundColor: colors?.backgroundColor || "#FFFFFF",
+            }}
+        >
+            <div className="max-w-screen-xl mx-auto px-4 md:px-8">
                 <div className="max-w-xl space-y-3">
-                    <h3 className="text-blue-600 font-semibold">Features</h3>
-                    <p className="text-gray-800 text-3xl font-semibold sm:text-4xl">Do more with less complexity</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue, nisl eget molestie varius</p>
+                    <h3
+                        className="font-semibold"
+                        style={{
+                            color: colors?.subtitleColor || "#2563EB",
+                        }}
+                    >
+                        {subtitle}
+                    </h3>
+                    <p
+                        className="text-3xl font-semibold sm:text-4xl"
+                        style={{
+                            color: colors?.titleColor || "#1E293B",
+                        }}
+                    >
+                        {title}
+                    </p>
+                    <p
+                        style={{
+                            color: colors?.textColor || "#4B5563",
+                        }}
+                    >
+                        {description}
+                    </p>
                 </div>
                 <div className="mt-12">
-                    <ul className="grid gap-x-12 divide-y [&>.feature-1]:pl-0 sm:grid-cols-2 sm:gap-y-8 sm:divide-y-0 lg:divide-x lg:grid-cols-3 lg:gap-x-0">
+                    <ul className="grid gap-x-12 divide-y sm:grid-cols-2 sm:gap-y-8 sm:divide-y-0 lg:divide-x lg:grid-cols-3 lg:gap-x-0">
                         {features.map((item, idx) => (
                             <li key={idx} className={`feature-${idx + 1} space-y-3 py-8 lg:px-12 sm:py-0`}>
-                                <div className="w-12 h-12 border text-blue-600 rounded-full flex items-center justify-center">
+                                <div
+                                    className="w-12 h-12 border rounded-full flex items-center justify-center"
+                                    style={{
+                                        color: colors?.iconColor || "#2563EB",
+                                        borderColor: colors?.borderColor || "#93C5FD",
+                                    }}
+                                >
                                     {item.icon}
                                 </div>
-                                <h4 className="text-lg text-gray-800 font-semibold">{item.title}</h4>
-                                <p>{item.desc}</p>
+                                <h4
+                                    className="text-lg font-semibold"
+                                    style={{
+                                        color: colors?.titleColor || "#1E293B",
+                                    }}
+                                >
+                                    {item.title}
+                                </h4>
+                                <p
+                                    style={{
+                                        color: colors?.textColor || "#4B5563",
+                                    }}
+                                >
+                                    {item.desc}
+                                </p>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
         </section>
-    )
+    );
 }
-
