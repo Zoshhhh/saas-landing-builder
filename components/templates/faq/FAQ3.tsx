@@ -1,18 +1,29 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import React, { useEffect } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+type ComponentColors = {
+  backgroundColor?: string;
+  titleColor?: string;
+  accordionBackgroundColor?: string;
+  accordionBorderColor?: string;
+  questionTextColor?: string;
+  questionHoverBackgroundColor?: string;
+  answerTextColor?: string;
+};
 
 type FAQ3Props = {
-  content?: string
-}
+  content?: string;
+  colors?: ComponentColors;
+};
 
-export default function FAQ3({ content }: FAQ3Props) {
+export default function FAQ3({ content, colors }: FAQ3Props) {
   useEffect(() => {
-    console.log("FAQ3 content:", content)
-  }, [content])
+    console.log("FAQ3 content:", content);
+  }, [content, colors]);
 
-  let title = "Frequently Asked Questions"
+  let title = "Frequently Asked Questions";
   let faqs = [
     {
       question: "How do I get started?",
@@ -44,46 +55,58 @@ export default function FAQ3({ content }: FAQ3Props) {
       answer:
           "We provide 24/7 customer support via email and chat. Our Enterprise customers also have access to dedicated phone support and a personal account manager.",
     },
-  ]
-
-  if (content) {
-    try {
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(content, "text/html")
-
-      const titleElement = doc.querySelector("h2")
-      if (titleElement) title = titleElement.textContent || title
-
-      const faqElements = doc.querySelectorAll("dt, dd")
-      if (faqElements.length > 0) {
-        faqs = []
-        for (let i = 0; i < faqElements.length; i += 2) {
-          const question = faqElements[i].textContent || ""
-          const answer = faqElements[i + 1].textContent || ""
-          faqs.push({ question, answer })
-        }
-      }
-    } catch (error) {
-      console.error("Error parsing content:", error)
-    }
-  }
+  ];
 
   return (
-      <section className="py-12 bg-gray-50">
+      <section
+          className="py-12"
+          style={{
+            backgroundColor: colors?.backgroundColor || "#F9FAFB",
+          }}
+      >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
+          <h2
+              className="text-3xl font-bold text-center mb-8"
+              style={{
+                color: colors?.titleColor || "#1E3A8A",
+              }}
+          >
+            {title}
+          </h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {faqs.map((faq, index) => (
-                <Accordion key={index} type="single" collapsible className="bg-white rounded-lg shadow">
-                  <AccordionItem value={`item-${index}`}>
-                    <AccordionTrigger className="px-4 py-3 hover:bg-gray-50">{faq.question}</AccordionTrigger>
-                    <AccordionContent className="px-4 pb-3 pt-1">{faq.answer}</AccordionContent>
+                <Accordion key={index} type="single" collapsible className="rounded-lg shadow transition-all duration-300">
+                  <AccordionItem
+                      value={`item-${index}`}
+                      style={{
+                        backgroundColor: colors?.accordionBackgroundColor || "white",
+                        borderColor: colors?.accordionBorderColor || "#E5E7EB",
+                      }}
+                      className="border rounded-lg"
+                  >
+                    <AccordionTrigger
+                        className="px-4 py-3 transition-colors duration-200"
+                        style={{
+                          color: colors?.questionTextColor || "#1E3A8A",
+                        }}
+                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colors?.questionHoverBackgroundColor || "#F3F4F6")}
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colors?.accordionBackgroundColor || "white")}
+                    >
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent
+                        className="px-4 pb-3 pt-1 transition-opacity duration-200"
+                        style={{
+                          color: colors?.answerTextColor || "#4B5563",
+                        }}
+                    >
+                      {faq.answer}
+                    </AccordionContent>
                   </AccordionItem>
                 </Accordion>
             ))}
           </div>
         </div>
       </section>
-  )
+  );
 }
-
