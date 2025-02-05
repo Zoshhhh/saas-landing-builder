@@ -26,7 +26,7 @@ export function AppNavbar() {
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
                 <Layers className="h-8 w-8 text-blue-500 mr-2" />
-                <span className="text-2xl font-bold text-gray-900">LandingBuilder</span>
+                <span className="text-2xl font-bold text-gray-900">QuickLaunch</span>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
