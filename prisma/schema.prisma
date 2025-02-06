@@ -8,20 +8,11 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(uuid())
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  purchase   UserPurchase?
-}
+  id               String   @id @default(cuid())
+  email            String   @unique
 
-model UserPurchase {
-  id             String   @id @default(uuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
-  stripeCustomerId String? 
-  amountPaid     Decimal
-  currency       String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  isActive         Boolean  @default(false)
+  subscriptionID   String?
+  stripeCustomerId String?  @unique
 }
 
