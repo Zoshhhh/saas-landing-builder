@@ -44,9 +44,7 @@ export async function sendUserToDiscord({
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        Discord webhook failed: ${response.status} ${response.statusText} - ${errorText}
-      );
+      throw new Error("Discord webhook failed: ${response.status} ${response.statusText} - ${errorText}");
     }
 
     return true;
