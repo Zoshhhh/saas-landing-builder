@@ -3,15 +3,7 @@
 import * as React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Layout,
-  Type,
-  CreditCard,
-  HelpCircle,
-  FootprintsIcon,
-  MessageSquare,
-  Image,
-} from "lucide-react"
+import { Layout, Type, CreditCard, HelpCircle, FootprintsIcon, MessageSquare, Image } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -24,6 +16,7 @@ interface ComponentOption {
     name: string
     label: string
     darkMode: boolean
+    image: string
   }[]
 }
 
@@ -34,8 +27,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Layout className="h-5 w-5" />,
     color: "bg-pink-100",
     variants: [
-      { name: "Header1", label: "Simple", darkMode: true },
-      { name: "Header2", label: "With Navigation", darkMode: true },
+      { name: "Header1", label: "Simple", darkMode: true, image: "/header1.png" },
+      { name: "Header2", label: "With Navigation", darkMode: true, image: "/header2.png" },
     ],
   },
   {
@@ -44,8 +37,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Type className="h-5 w-5" />,
     color: "bg-blue-100",
     variants: [
-      { name: "Hero1", label: "Centered", darkMode: true },
-      { name: "Hero2", label: "Split", darkMode: false },
+      { name: "Hero1", label: "Centered", darkMode: true, image: "/hero1.png" },
+      { name: "Hero2", label: "Split", darkMode: false, image: "/hero2.png" },
     ],
   },
   {
@@ -54,8 +47,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <FootprintsIcon className="h-5 w-5" />,
     color: "bg-red-100",
     variants: [
-      { name: "Footer1", label: "Simple", darkMode: true },
-      { name: "Footer2", label: "With Links", darkMode: false },
+      { name: "Footer1", label: "Simple", darkMode: true, image: "/footer1.png" },
+      { name: "Footer2", label: "With Links", darkMode: false, image: "/footer2.png" },
     ],
   },
   {
@@ -64,9 +57,9 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <CreditCard className="h-5 w-5" />,
     color: "bg-yellow-100",
     variants: [
-      { name: "Pricing1", label: "Classic", darkMode: true },
-      { name: "Pricing2", label: "Feature Comparison", darkMode: false },
-      { name: "Pricing3", label: "Gradient", darkMode: false },
+      { name: "Pricing1", label: "Classic", darkMode: true, image: "/pricing1.png" },
+      { name: "Pricing2", label: "Feature Comparison", darkMode: false, image: "/pricing2.png" },
+      { name: "Pricing3", label: "Gradient", darkMode: false, image: "/pricing3.png" },
     ],
   },
   {
@@ -75,8 +68,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <MessageSquare className="h-5 w-5" />,
     color: "bg-purple-100",
     variants: [
-      { name: "Testimonials1", label: "Grid Layout", darkMode: false },
-      { name: "Testimonials2", label: "Carousel", darkMode: false },
+      { name: "Testimonials1", label: "Grid Layout", darkMode: false, image: "/testimonials1.png" },
+      { name: "Testimonials2", label: "Carousel", darkMode: false, image: "/testimonials2.png" },
     ],
   },
   {
@@ -85,8 +78,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <HelpCircle className="h-5 w-5" />,
     color: "bg-indigo-100",
     variants: [
-      { name: "FAQ1", label: "Simple Accordion", darkMode: false },
-      { name: "FAQ2", label: "Categorized with Links", darkMode: false },
+      { name: "FAQ1", label: "Simple Accordion", darkMode: false, image: "/faq1.png" },
+      { name: "FAQ2", label: "Categorized with Links", darkMode: false, image: "/faq2.png" },
     ],
   },
   {
@@ -95,8 +88,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Image className="h-5 w-5" />,
     color: "bg-green-100",
     variants: [
-      { name: "ImageGallery1", label: "Featured Image", darkMode: false },
-      { name: "ImageGallery2", label: "Grid with Lightbox", darkMode: false },
+      { name: "ImageGallery1", label: "Featured Image", darkMode: false, image: "/gallery1.png" },
+      { name: "ImageGallery2", label: "Grid with Lightbox", darkMode: false, image: "/gallery2.png" },
     ],
   },
   {
@@ -105,8 +98,8 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Type className="h-5 w-5" />,
     color: "bg-purple-100",
     variants: [
-      { name: "Text1", label: "Simple Text", darkMode: false },
-      { name: "Text2", label: "Two-Column Text", darkMode: false },
+      { name: "Text1", label: "Simple Text", darkMode: false, image: "/text1.png" },
+      { name: "Text2", label: "Two-Column Text", darkMode: false, image: "/text2.png" },
     ],
   },
   {
@@ -115,14 +108,14 @@ export const COMPONENT_OPTIONS: ComponentOption[] = [
     icon: <Layout className="h-5 w-5" />,
     color: "bg-indigo-100",
     variants: [
-      { name: "Features", label: "Feature Grid", darkMode: false },
-      { name: "CTA", label: "Call to Action", darkMode: false },
-      { name: "Services", label: "Service Cards", darkMode: false },
-      { name: "Contact", label: "Contact Form", darkMode: false },
-      { name: "About", label: "About Section", darkMode: false },
-      { name: "FeaturedPosts", label: "Featured Posts", darkMode: false },
-      { name: "Newsletter", label: "Newsletter", darkMode: false },
-      { name: "PostGrid", label: "Post Grid", darkMode: false },
+      { name: "Features", label: "Feature Grid", darkMode: false, image: "/divers-features.png" },
+      { name: "CTA", label: "Call to Action", darkMode: false, image: "/divers-cta.png" },
+      { name: "Services", label: "Service Cards", darkMode: false, image: "/divers-services.png" },
+      { name: "Contact", label: "Contact Form", darkMode: false, image: "/divers-contact.png" },
+      { name: "About", label: "About Section", darkMode: false, image: "/divers-about.png" },
+      { name: "FeaturedPosts", label: "Featured Posts", darkMode: false, image: "/divers-featuredposts.png" },
+      { name: "Newsletter", label: "Newsletter", darkMode: false, image: "/divers-newsletter.png" },
+      { name: "PostGrid", label: "Post Grid", darkMode: false, image: "/divers-postgrid.png" },
     ],
   },
 ]
@@ -250,6 +243,7 @@ interface VariantCardProps {
     name: string
     label: string
     darkMode: boolean
+    image: string
   }
   onClick: () => void
 }
@@ -264,14 +258,8 @@ function VariantCard({ variant, onClick }: VariantCardProps) {
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500",
           )}
       >
-        <div className="aspect-video w-full bg-gray-100 p-2">
-          <div className="w-full h-full flex flex-col">
-            <div className="h-2 w-16 bg-gray-300 rounded mb-2"></div>
-            <div className="flex-1 flex space-x-2">
-              <div className="w-2/3 bg-gray-300 rounded"></div>
-              <div className="w-1/3 bg-gray-300 rounded"></div>
-            </div>
-          </div>
+        <div className="aspect-video w-full bg-gray-100">
+          <img src={variant.image || "/placeholder.svg"} alt={variant.label} className="w-full h-full object-cover" />
         </div>
         <div className="p-2">
           <span className="text-xs font-medium">{variant.label}</span>
