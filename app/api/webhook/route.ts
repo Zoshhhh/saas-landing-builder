@@ -3,12 +3,14 @@ import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 
-// Initialisation de l'instance Stripe avec la clé secrète
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-// Chargement de la clé secrète du webhook Stripe depuis les variables d'environnement
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
 export async function POST(req: Request) {
+  // Initialisation de l'instance Stripe avec la clé secrète
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: '2023-10-16', // Using the latest API version
+  });
+
+  // Chargement de la clé secrète du webhook Stripe depuis les variables d'environnement
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   // Extraction du corps de la requête en tant que texte brut
   const body = await req.text();
@@ -18,7 +20,7 @@ export async function POST(req: Request) {
   // Vérification si la signature est présente dans les en-têtes
   if (!signature) {
     console.error('La signature du webhook est manquante.');
-    return new Response(JSON.stringify({ error: 'Webhook signature missing' }), { status: 400 });
+    return NextResponse.json({ error: 'Webhook signature missing' }, { status: 400 });
   }
 
   let event;
@@ -29,11 +31,15 @@ export async function POST(req: Request) {
   } catch (err: any) {
     // Gestion des erreurs liées à la vérification de la signature
     console.error(`Échec de la vérification de la signature du webhook. ${err.message}`);
-    return new Response(JSON.stringify({ error: err.message }), { status: 400 });
+    console.error('Webhook Secret:', webhookSecret ? 'Defined' : 'Undefined');
+    console.error('Signature:', signature);
+    return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
   // Extraction des données et du type d'événement
   const { data, type: eventType } = event;
+
+  console.log('Webhook received:', eventType);
 
   try {
     // Gestion des différents types d'événements Stripe
@@ -42,6 +48,7 @@ export async function POST(req: Request) {
       case 'checkout.session.completed': {
         console.log('Handling checkout.session.completed event...');
         const session = data.object as Stripe.Checkout.Session;
+        console.log('Session data:', JSON.stringify(session, null, 2));
       
         if (!session.customer) {
           throw new Error('Customer ID manquant dans la session');
@@ -101,6 +108,7 @@ export async function POST(req: Request) {
       case 'customer.subscription.deleted': {
         console.log('Handling customer.subscription.deleted event...');
         const subscription = data.object as Stripe.Subscription;
+        console.log('Subscription data:', JSON.stringify(subscription, null, 2));
 
         if (!subscription.customer) {
           throw new Error("Informations d'abonnement manquantes");
@@ -131,23 +139,21 @@ export async function POST(req: Request) {
       }
       // Gestion des événements non pris en charge
       default:
-        console.error(`Type d'événement non géré: ${eventType}`);
+        console.warn(`Type d'événement non géré: ${eventType}`);
+        return NextResponse.json({}, { status: 200 });
     }
 
-
-
+    // Réponse réussie pour le webhook
+    return NextResponse.json({}, { status: 200 });
     
   } catch (e) {
     // Gestion des erreurs générales
     if (e instanceof Error) {
       console.error(`Erreur Stripe: ${e.message} | Type d'événement: ${eventType}`);
-      return new Response(JSON.stringify({ error: e.message }), { status: 400 });
+      return NextResponse.json({ error: e.message }, { status: 400 });
     } else {
       console.error(`Erreur inconnue: ${e}`);
-      return new Response(JSON.stringify({ error: 'Erreur inconnue' }), { status: 400 });
+      return NextResponse.json({ error: 'Erreur inconnue' }, { status: 400 });
     }
   }
-
-  // Réponse réussie pour le webhook
-  return new Response(JSON.stringify({}));
 }
