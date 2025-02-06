@@ -40,7 +40,7 @@ const componentImports: { [key: string]: ComponentType<ComponentProps> } = {
     Pricing3: dynamic(() => import("@/components/templates/pricing/Pricing3")),
     Testimonials1: dynamic(() => import("@/components/templates/testimonials/Testimonials1")),
     Testimonials2: dynamic(() => import("@/components/templates/testimonials/Testimonials2")),
-    ImageGallery1: dynamic(() => import("@/components/templates/gallery/ImageGallery1").then(mod => mod.default as React.ComponentType<any>)),
+    ImageGallery1: dynamic(() => import("@/components/templates/gallery/ImageGallery1")),
     ImageGallery2: dynamic(() => import("@/components/templates/gallery/ImageGallery2")),
     Text1: dynamic(() => import("@/components/templates/text/Text1")),
     Text2: dynamic(() => import("@/components/templates/text/Text2")),
