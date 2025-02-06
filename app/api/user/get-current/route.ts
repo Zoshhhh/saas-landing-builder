@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1336991360175046667/SM0qSsdwHsoH_za8Ee21KSUfO8bYTfk1sBA84jA90I_AKU1Wzl5Ebvb24gbaQs_QaOjF";
 
-async function sendDiscordNotification(content) {
+async function sendDiscordNotification(content: string): Promise<void> {
   try {
     await fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
