@@ -1,1 +1,0 @@
-ici faire ton stripe webhook ou tout les call sont appelle en gros si payement success ca fais ca etc 
