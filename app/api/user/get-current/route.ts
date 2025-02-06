@@ -2,6 +2,20 @@ import { NextResponse } from 'next/server';
 import { auth, currentUser } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1336991360175046667/SM0qSsdwHsoH_za8Ee21KSUfO8bYTfk1sBA84jA90I_AKU1Wzl5Ebvb24gbaQs_QaOjF";
+
+async function sendDiscordNotification(content) {
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+  } catch (error) {
+    console.error("❌ Erreur lors de l'envoi de la notification Discord:", error);
+  }
+}
+
 export async function GET() {
   try {
     const authData = auth();
@@ -32,9 +46,9 @@ export async function GET() {
 
     if (!user) {
       console.log("⚠️ Utilisateur introuvable en BDD, création en cours...");
-      
+
       user = await prisma.user.create({
-        data: { 
+        data: {
           id: userId,
           email: email,
           isActive: false, // Set to false by default, will be updated when subscription is active
@@ -42,13 +56,21 @@ export async function GET() {
       });
 
       console.log("✅ Nouvel utilisateur créé:", user);
+
+      // Envoi d'une notification Discord pour un nouvel utilisateur
+      await sendDiscordNotification(`🎉 New User: **${email}**`);
+    } else {
+      // Envoi d'une notification Discord quand un utilisateur se connecte à la dashboard
+      await sendDiscordNotification(`✅ User Logged In: **${email}**`);
     }
 
     console.log("✅ Réponse envoyée:", JSON.stringify({ user }));
-
     return NextResponse.json({ user });
-  } catch (error) {
-    console.error("🔥 Erreur API :", error);
-    return NextResponse.json({ error: `Internal Server Error: ${error.message}` }, { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("🔥 Erreur API :", error);
+      return NextResponse.json({ error: `Internal Server Error: ${error.message}` }, { status: 500 });
+    }
+    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
   }
 }
