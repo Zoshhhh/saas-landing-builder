@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -39,46 +41,49 @@ export default function Hero1({ content, colors }: Hero1Props) {
 
   return (
     <section
-      className="container mx-auto px-4 py-16 text-center"
+      className="w-full min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24"
       style={{
         backgroundColor: colors?.backgroundColor || "white",
       }}
     >
-      <h1
-        className="text-4xl font-bold mb-6"
-        style={{
-          color: colors?.textColor || "#111827",
-        }}
-      >
-        {title}
-      </h1>
-      <p
-        className="text-xl mb-8 max-w-2xl mx-auto"
-        style={{
-          color: colors?.textColor || "#4B5563",
-        }}
-      >
-        {description}
-      </p>
-      <Button
-        size="lg"
-        style={{
-          backgroundColor: colors?.buttonColor || "#3B82F6",
-          color: colors?.buttonTextColor || "white",
-        }}
-        className="hover:opacity-90 transition-opacity"
-      >
-        {buttonText}
-      </Button>
+      <div className="w-full max-w-6xl">
+        <h1
+          className="text-5xl font-bold mb-10"
+          style={{
+            color: colors?.textColor || "#111827",
+          }}
+        >
+          {title}
+        </h1>
+        <p
+          className="text-xl mb-8 max-w-3xl mx-auto"
+          style={{
+            color: colors?.textColor || "#4B5563",
+          }}
+        >
+          {description}
+        </p>
+        <Button
+          size="lg"
+          style={{
+            backgroundColor: colors?.buttonColor || "#3B82F6",
+            color: colors?.buttonTextColor || "white",
+          }}
+          className="hover:opacity-90 transition-opacity"
+        >
+          {buttonText}
+        </Button>
 
-      <div className="mt-12 max-w-4xl mx-auto">
-        <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
-          <div className="w-full h-full p-8 flex flex-col justify-center items-center">
-            <div className="w-3/4 h-6 bg-gray-300 rounded mb-4"></div>
-            <div className="w-1/2 h-4 bg-gray-300 rounded mb-6"></div>
-            <div className="flex space-x-4">
-              <div className="w-20 h-8 bg-gray-300 rounded"></div>
-              <div className="w-20 h-8 bg-gray-300 rounded"></div>
+        {/* Zone Placeholder */}
+        <div className="mt-12 w-full max-w-5xl mx-auto">
+          <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+            <div className="w-full h-full p-8 flex flex-col justify-center items-center">
+              <div className="w-3/4 h-6 bg-gray-300 rounded mb-4"></div>
+              <div className="w-1/2 h-4 bg-gray-300 rounded mb-6"></div>
+              <div className="flex space-x-4">
+                <div className="w-20 h-8 bg-gray-300 rounded"></div>
+                <div className="w-20 h-8 bg-gray-300 rounded"></div>
+              </div>
             </div>
           </div>
         </div>
