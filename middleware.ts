@@ -1,11 +1,9 @@
 import { authMiddleware } from "@clerk/nextjs";
-import { clerkConfig } from "./app/clerk-config";
 
 export default authMiddleware({
     publicRoutes: [
-        ...clerkConfig.publicRoutes,
         "/api/webhook",
-        "/api/stripe/webhook", // ✅ Assure que Stripe peut accéder au webhook
+        "/api/stripe/webhook", // ✅ Vérifie que le webhook Stripe est bien public
     ],
     ignoredRoutes: [
         "/api/webhook",
@@ -17,7 +15,7 @@ export const config = {
     matcher: [
         "/((?!.+\\.[\\w]+$|_next).*)",
         "/",
-        "/api/user(.*)", // ✅ Permet aux routes Clerk de fonctionner
+        "/api/user(.*)",
         "/(api|trpc)(.*)",
     ],
 };

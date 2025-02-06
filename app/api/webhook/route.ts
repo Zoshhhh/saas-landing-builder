@@ -42,57 +42,47 @@ export async function POST(req: NextRequest) {
         console.log("🔔 Événement : checkout.session.completed");
         const session = data.object as Stripe.Checkout.Session;
 
-        if (!session.customer) {
-          throw new Error("❌ Customer ID manquant dans la session");
+        console.log("🛒 Données complètes de la session :", JSON.stringify(session, null, 2));
+
+        // Essayer de récupérer l'email du client
+        const customerId = session.customer as string | null;
+        const customerEmail = session.customer_email as string | null;
+        const fallbackEmail = session.customer_details?.email as string | null; // 🔥 Nouvelle ligne
+
+        if (!customerId && !customerEmail && !fallbackEmail) {
+          console.error("❌ Impossible de récupérer le client : aucun Customer ID ni email.");
+          return NextResponse.json({ error: "Aucun identifiant client trouvé" }, { status: 400 });
         }
 
-        const customerId = session.customer as string;
-        console.log(`🔍 Customer ID : ${customerId}`);
+        console.log(`🔍 Customer ID : ${customerId || "N/A"}`);
+        console.log(`📩 Email client : ${customerEmail || fallbackEmail || "N/A"}`);
 
-        // Récupération des infos du client depuis Stripe
-        const customer = await stripe.customers.retrieve(customerId);
+        // On utilise l'email récupéré pour identifier l'utilisateur
+        const email = customerEmail || fallbackEmail;
 
-        if ("deleted" in customer) {
-          throw new Error("❌ Le client a été supprimé");
-        }
-        if (!customer.email) {
-          throw new Error("❌ Aucun email client fourni");
-        }
+        let user = await prisma.user.findUnique({
+          where: { email: email || undefined },
+        });
 
-        console.log(`📩 Customer email : ${customer.email}`);
-
-        // Vérification si l'utilisateur existe déjà
-        let user = await prisma.user.findUnique({ where: { email: customer.email } });
-
-        if (user && user.isActive) {
-          throw new Error("❌ Un abonnement est déjà actif pour cet utilisateur.");
-        }
-
-        // Création ou mise à jour de l'utilisateur
-        if (!user) {
+        if (!user && email) {
+          console.log("🆕 Création d'un nouvel utilisateur basé sur l'email.");
           user = await prisma.user.create({
             data: {
-              email: customer.email,
-              stripeCustomerId: customerId,
-              subscriptionID: session.subscription as string,
+              email: email,
+              stripeCustomerId: customerId || null,
               isActive: true,
             },
           });
-          console.log(`✅ Nouvel utilisateur créé : ${JSON.stringify(user)}`);
-        } else {
-          user = await prisma.user.update({
-            where: { email: customer.email },
-            data: {
-              stripeCustomerId: customerId,
-              subscriptionID: session.subscription as string,
-              isActive: true,
-            },
+        } else if (user) {
+          console.log("🔄 Mise à jour de l'utilisateur existant.");
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { stripeCustomerId: customerId || null, isActive: true },
           });
-          console.log(`🔄 Utilisateur mis à jour : ${JSON.stringify(user)}`);
         }
-        break;
-      }
 
+        return NextResponse.json({ success: true });
+      }
         // ❌ Paiement échoué
       case "invoice.payment_failed": {
         console.log("⚠️ Paiement échoué détecté !");
