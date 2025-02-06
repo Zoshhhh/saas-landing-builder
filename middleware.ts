@@ -17,5 +17,6 @@ export const config = {
         "/",
         "/api/user(.*)",
         "/(api|trpc)(.*)",
+        "/api/stripe-webhook",
     ],
 };
