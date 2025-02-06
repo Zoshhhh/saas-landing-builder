@@ -4,7 +4,6 @@ import * as React from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 
 interface Template {
@@ -14,6 +13,8 @@ interface Template {
         id: string
         variant: string
     }>
+    image: string
+    video: string
 }
 
 const TEMPLATES: Template[] = [
@@ -27,6 +28,8 @@ const TEMPLATES: Template[] = [
             { id: "cta", variant: "CTA" },
             { id: "footer", variant: "Footer1" },
         ],
+        image: "/basic.png",
+        video: "/basic.mp4",
     },
     {
         name: "Product Page",
@@ -42,6 +45,8 @@ const TEMPLATES: Template[] = [
             { id: "faq", variant: "FAQ1" },
             { id: "footer", variant: "Footer2" },
         ],
+        image: "/product.png",
+        video: "/product.mp4",
     },
     {
         name: "Service Page",
@@ -57,6 +62,8 @@ const TEMPLATES: Template[] = [
             { id: "contact", variant: "Contact" },
             { id: "footer", variant: "Footer1" },
         ],
+        image: "/service.png",
+        video: "/service.mp4",
     },
     {
         name: "Portfolio",
@@ -69,6 +76,8 @@ const TEMPLATES: Template[] = [
             { id: "contact", variant: "Contact" },
             { id: "footer", variant: "Footer1" },
         ],
+        image: "/portfolio.png",
+        video: "/portfolio.mp4",
     },
     {
         name: "Blog",
@@ -80,6 +89,8 @@ const TEMPLATES: Template[] = [
             { id: "newsletter", variant: "Newsletter" },
             { id: "footer", variant: "Footer1" },
         ],
+        image: "/blog.png",
+        video: "/blog.mp4",
     },
     {
         name: "Event",
@@ -93,6 +104,8 @@ const TEMPLATES: Template[] = [
             { id: "venue", variant: "Venue" },
             { id: "footer", variant: "Footer1" },
         ],
+        image: "/event.png",
+        video: "/event.mp4",
     },
 ]
 
@@ -134,9 +147,27 @@ interface TemplateCardProps {
 }
 
 function TemplateCard({ template, onSelect }: TemplateCardProps) {
+    const [isHovering, setIsHovering] = React.useState(false)
+
     return (
-        <div className="bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl flex flex-col h-full">
-            <Skeleton className="w-full h-36" />
+        <div
+            className="bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl flex flex-col h-full"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+        >
+            <div className="relative w-full h-36">
+                <img src={template.image || "/placeholder.svg"} alt={template.name} className="w-full h-full object-cover" />
+                {isHovering && (
+                    <video
+                        src={template.video}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                )}
+            </div>
             <div className="p-4 flex-grow flex flex-col">
                 <h3 className="text-lg font-semibold mb-1">{template.name}</h3>
                 <p className="text-sm text-gray-600 mb-2 flex-grow">{template.description}</p>
