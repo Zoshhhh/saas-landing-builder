@@ -33,23 +33,21 @@ const PricingAndFeatures = () => {
     {
       name: (
         <span className="inline-block px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
-          SEO Tools
+          Using AI to create a page
         </span>
       ),
-      desc: "Boost your visibility with built-in SEO optimization features tailored for Next.js.",
+      desc: "Save a lot of time on creating your pages thanks to AI",
       icon: <Search className="w-6 h-6" />,
     },
   ]
 
   const planFeatures = [
     "Export projects in Next.js",
+    "Using AI to create a page",
     "Unlimited page creation",
-    "Custom domains",
     "Responsive design templates",
     "Access to premium components",
-    "SEO optimization tools",
     "Priority support",
-    "Version control for projects",
   ]
 
   return (
