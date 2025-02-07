@@ -232,13 +232,17 @@ export default function DocumentationPage() {
                                         <ol className="list-decimal pl-6 space-y-2 mb-8">
                                             <li>Navigate to the landing page generator interface.</li>
                                             <li>Choose a template or start with a blank page.</li>
-                                            <li>Use the sidebar to add and customize components for your landing page.</li>
+                                            <li>Use the sidebar to add and customize components for your landing page.
+                                            </li>
                                             <li>Preview your landing page and make any necessary adjustments.</li>
-                                            <li>When satisfied, click "Download" to get the source code of your landing page.</li>
+                                            <li>When satisfied, click "Download" to get the source code of your landing
+                                                page.
+                                            </li>
                                         </ol>
                                         <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
                                             <p className="text-sm text-blue-700">
-                                                <strong>Pro Tip:</strong> Start with a template that closely matches your vision to save time,
+                                                <strong>Pro Tip:</strong> Start with a template that closely matches
+                                                your vision to save time,
                                                 then customize it to make it unique.
                                             </p>
                                         </div>
@@ -256,28 +260,32 @@ export default function DocumentationPage() {
                                             <TabsContent value="components">
                                                 <Card>
                                                     <CardContent className="pt-6">
-                                                        <p>Building blocks of your landing page (e.g., headers, hero sections, features).</p>
+                                                        <p>Building blocks of your landing page (e.g., headers, hero
+                                                            sections, features).</p>
                                                     </CardContent>
                                                 </Card>
                                             </TabsContent>
                                             <TabsContent value="templates">
                                                 <Card>
                                                     <CardContent className="pt-6">
-                                                        <p>Pre-designed layouts that you can use as a starting point for your landing page.</p>
+                                                        <p>Pre-designed layouts that you can use as a starting point for
+                                                            your landing page.</p>
                                                     </CardContent>
                                                 </Card>
                                             </TabsContent>
                                             <TabsContent value="customization">
                                                 <Card>
                                                     <CardContent className="pt-6">
-                                                        <p>Ability to modify colors, fonts, and content of each component.</p>
+                                                        <p>Ability to modify colors, fonts, and content of each
+                                                            component.</p>
                                                     </CardContent>
                                                 </Card>
                                             </TabsContent>
                                             <TabsContent value="preview">
                                                 <Card>
                                                     <CardContent className="pt-6">
-                                                        <p>Real-time visualization of your landing page as you build it.</p>
+                                                        <p>Real-time visualization of your landing page as you build
+                                                            it.</p>
                                                     </CardContent>
                                                 </Card>
                                             </TabsContent>
@@ -285,7 +293,8 @@ export default function DocumentationPage() {
                                                 <Card>
                                                     <CardContent className="pt-6">
                                                         <p>
-                                                            Option to get the complete source code of your landing page for further development or
+                                                            Option to get the complete source code of your landing page
+                                                            for further development or
                                                             hosting.
                                                         </p>
                                                     </CardContent>
@@ -296,20 +305,12 @@ export default function DocumentationPage() {
                                             Interactive Demo
                                         </h2>
                                         <div className="bg-gray-100 p-4 rounded-lg mb-8">
-                                            <p className="text-center text-gray-500 mb-4">Interactive demo placeholder</p>
                                             <div className="flex justify-center">
-                                                <Button>Try it out</Button>
+                                                <video controls className="rounded-lg">
+                                                    <source src="/features.mp4" type="video/mp4"/>
+                                                    Your browser does not support the video tag.
+                                                </video>
                                             </div>
-                                        </div>
-                                        <h2 className="text-2xl font-semibold mt-8 mb-4">Video Tutorial</h2>
-                                        <div className="aspect-w-16 aspect-h-9 mb-8">
-                                            <iframe
-                                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                                className="w-full h-full"
-                                            ></iframe>
                                         </div>
                                     </>
                                 )}
