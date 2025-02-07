@@ -24,7 +24,7 @@ export function InitialChoiceDialog({
             <DialogContent className="sm:max-w-[700px]" onInteractOutside={onClose} onEscapeKeyDown={onClose}>
                 <DialogHeader>
                     <div className="flex justify-between items-center">
-                        <DialogTitle className="text-2xl">Welcome to Landing Page Generator</DialogTitle>
+                        <DialogTitle className="text-2xl">Welcome to QuickLau.ch</DialogTitle>
                         <Button variant="ghost" size="icon" onClick={onClose}>
                             <X className="h-4 w-4" />
                         </Button>
