@@ -35,13 +35,18 @@ export function CTA() {
                         </Link>
                     </div>
                     <div className="flex-1 mt-5 mx-auto sm:w-9/12 lg:mt-0 lg:w-auto">
-                        <Image
-                            src="/cta.gif"
-                            alt="Landing Page Builder Demo"
-                            width={600}
-                            height={400}
+                        <video
+                            src="/cta.mp4"
+                            width={500}
+                            height={333}
                             className="w-full rounded-lg shadow-md"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            controls
                         />
+
                     </div>
                 </div>
             </div>

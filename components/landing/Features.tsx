@@ -1,4 +1,5 @@
 import Image from "next/image"
+import {Video} from "lucide-react";
 
 export function Features() {
     const features = [
@@ -81,12 +82,16 @@ export function Features() {
                     </div>
                 </div>
                 <div className="w-full lg:w-7/12 mt-20 lg:mt-40">
-                    <Image
-                        src="/features.gif"
-                        alt="AI Landing Page Builder Demo"
+                    <video
+                        src="/features.mp4"
                         width={500}
                         height={333}
                         className="w-full rounded-lg shadow-md"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controls
                     />
                 </div>
             </div>
