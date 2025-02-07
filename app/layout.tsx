@@ -4,12 +4,11 @@ import "@/styles/globals.css"
 import { clerkConfig } from "./clerk-config"
 
 export const metadata: Metadata = {
-    title: "Landing Page Generator",
-    description: "Create beautiful landing pages with ease",
+    title: "QuickLaun.ch - Landing but Easily",
     icons: {
         icon: "/favicon.ico",
-        shortcut: "/favicon-16x16.png",
-        apple: "/apple-touch-icon.png",
+        shortcut: "/favicon.ico",
+        apple: "/favicon.ico",
     },
 }
 
