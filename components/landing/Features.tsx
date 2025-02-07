@@ -54,7 +54,7 @@ export function Features() {
 
     return (
         <section className="py-14">
-            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-16 justify-between md:px-8 lg:flex">
+            <div className="max-w-screen-xl mx-auto px-4 text-gray-600 gap-16 justify-between md:px-8 lg:flex lg:flex-row-reverse">
                 <div className="lg:w-1/2">
                     <div className="max-w-xl space-y-3">
                         <h3 className="text-blue-500 font-semibold">Features</h3>
@@ -93,4 +93,3 @@ export function Features() {
         </section>
     )
 }
-
