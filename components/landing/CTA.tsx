@@ -8,9 +8,10 @@ export function CTA() {
                 <div className="gap-5 items-center lg:flex">
                     <div className="flex-1 max-w-lg py-5 sm:mx-auto sm:text-center lg:max-w-max lg:text-left">
                         <h2 className="text-5xl font-bold leading-tight text-gray-900 md:text-5xl">
-                            Build your websites with{" "}
-                            <span className="inline-block w-fit px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
-high performance
+                            Build your websites with
+                            <br className="hidden sm:block" />
+                            <span className="inline-block mt-2 w-fit px-4 py-2 bg-blue-100 text-[#4763FF] rounded-lg italic transform -rotate-2 hover:rotate-0 transition-transform">
+                                high performance
                             </span>
                         </h2>
                         <p className="text-gray-500 leading-relaxed mt-3 text-lg">
@@ -48,4 +49,3 @@ high performance
         </section>
     )
 }
-
