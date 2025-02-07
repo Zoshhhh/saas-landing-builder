@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth, currentUser } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1336991360175046667/SM0qSsdwHsoH_za8Ee21KSUfO8bYTfk1sBA84jA90I_AKU1Wzl5Ebvb24gbaQs_QaOjF";
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1337396962487439422/rM2m6JCxBDL5pftQGD4Ax8i3G6Ag9fFqxFyurBGCZDcL2szLQIQKfKglREJc73mCuzGq";
 
 async function sendDiscordNotification(content: string): Promise<void> {
   try {
