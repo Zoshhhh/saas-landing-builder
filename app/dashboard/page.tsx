@@ -29,6 +29,7 @@ interface ComponentProps {
 const componentImports: { [key: string]: ComponentType<ComponentProps> } = {
     Header1: dynamic(() => import("@/components/templates/header/Header1")),
     Header2: dynamic(() => import("@/components/templates/header/Header2")),
+    HeaderCrypto: dynamic(() => import("@/components/templates/header/HeaderCrypto")),
     Hero1: dynamic(() => import("@/components/templates/hero/Hero1")),
     Hero2: dynamic(() => import("@/components/templates/hero/Hero2")),
     Footer1: dynamic(() => import("@/components/templates/footer/Footer1")),
