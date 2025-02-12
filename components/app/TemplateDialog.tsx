@@ -107,6 +107,21 @@ const TEMPLATES: Template[] = [
         image: "/event.png",
         video: "/event.mp4",
     },
+    {
+        name: "Crypto",
+        description: "Il faut changer le text brother oublie pas :)",
+        components: [
+            { id: "header", variant: "HeaderCrypto" },
+            { id: "hero", variant: "HeroCrypto" },
+            { id: "features", variant: "FeaturesCrypto" },
+            { id: "cta", variant: "CTACrypto" },
+            { id: "image", variant: "ImageGalleryCrypto" },
+            { id: "testimonials", variant: "TestimonialsCrypto" },
+            { id: "footer", variant: "FooterCrypto" },
+        ],
+        image: "/event.png",
+        video: "/event.mp4",
+    },
 ]
 
 interface TemplateDialogProps {
